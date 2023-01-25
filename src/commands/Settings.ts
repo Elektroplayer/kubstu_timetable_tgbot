@@ -6,7 +6,7 @@ import { settingsKeyboard } from "../lib/Keyboards.js";
 import Users from "../models/Users.js";
 
 export default class TodayCommand extends Command {
-    name = ["⚙️ Настройки", "/settings", "/settings@kubgtu_lessons_bot"];
+    name = ["⚙️ Настройки", "/settings", "/settings@kubstu_timetable_bot"];
     sceneName = ["main"];
 
     async exec(user: User, msg: Message): Promise<void> {
@@ -19,7 +19,7 @@ export default class TodayCommand extends Command {
         let userData = await Users.findOne({userId: user.id}).exec()
 
         if (!userData) {
-            Cache.bot.sendMessage(msg.chat.id, "Сначала настрой бота! /start");
+            Cache.bot.sendMessage(msg.chat.id, "Сначала введи свои данные! /start");
 
             return;
         }

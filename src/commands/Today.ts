@@ -5,7 +5,7 @@ import Cache from "../lib/Cache.js";
 import SponsorMessagesMiddleware from "../middlewares/SponsorMessages.js";
 
 export default class TodayCommand extends Command {
-    name = ["⏺️ Сегодняшнее", "/today", "/today@kubgtu_lessons_bot"];
+    name = ["⏺️ Сегодняшнее", "/today", "/today@kubstu_timetable_bot"];
     sceneName = ["main"];
     middlewares = [SponsorMessagesMiddleware];
 

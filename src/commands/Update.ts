@@ -4,7 +4,7 @@ import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
 
 export default class TodayCommand extends Command {
-    name = ["/update", "/update@kubgtu_lessons_bot"];
+    name = ["/update", "/update@kubstu_timetable_bot"];
     sceneName = ["main"];
 
     async exec(user: User, msg: Message): Promise<void> {

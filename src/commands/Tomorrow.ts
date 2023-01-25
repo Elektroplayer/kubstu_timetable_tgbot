@@ -5,7 +5,7 @@ import Cache from "../lib/Cache.js";
 import SponsorMessagesMiddleware from "../middlewares/SponsorMessages.js";
 
 export default class TomorrowCommand extends Command {
-    name = ["▶️ Завтрашнее", "/tomorrow", "/tomorrow@kubgtu_lessons_bot"];
+    name = ["▶️ Завтрашнее", "/tomorrow", "/tomorrow@kubstu_timetable_bot"];
     sceneName = ["main"];
     middlewares = [SponsorMessagesMiddleware];
 
