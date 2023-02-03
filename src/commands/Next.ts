@@ -11,7 +11,7 @@ export default class NearestCommand extends Command {
 
     async exec(user: User, msg: Message): Promise<void> {
         if(!user.group) {
-            Cache.bot.sendMessage(msg.chat.id, "У меня нет данных о тебе. Напиши /start" + ( msg.chat.id !== user.id ? " мне личные сообщения." : "."));
+            Cache.bot.sendMessage(msg.chat.id, "У меня нет данных о тебе. Напиши /start" + ( msg.chat.type == "group" ? " мне в личные сообщения." : "."));
             return;
         }
 
@@ -41,22 +41,5 @@ export default class NearestCommand extends Command {
                 }
             }
         );
-
-        // if(user.count > 7 && user.id == msg.chat.id) {
-        //     console.log(" + донатное сообщение.");
-
-        //     bot.sendMessage(
-        //         msg.chat.id,
-        //         messages[ Math.floor( Math.random() * messages.length ) ],
-        //         {
-        //             parse_mode: "HTML",
-        //             reply_markup: {
-        //                 remove_keyboard: user.id !== msg.chat.id
-        //             }
-        //         }
-        //     );
-
-        //     user.count = 0;
-        // } else user.count++;
     }
 }

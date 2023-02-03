@@ -9,15 +9,12 @@ export default class AnotherDayCommand extends Command {
     sceneName = ["main"];
 
     async exec(user: User, msg: Message): Promise<void> {
+        if (msg.chat.type == "group") return;
+
         if (!user.group) {
-            Cache.bot.sendMessage(
-                user.id,
-                "У меня нет данных о тебе. Напиши /start"
-            );
+            Cache.bot.sendMessage(user.id, "У меня нет данных о тебе. Напиши /start");
             return;
         }
-
-        if (msg.chat.type == "group") return;
 
         Cache.bot.sendMessage(user.id, "Выбери дату", {
             reply_markup: {

@@ -11,7 +11,7 @@ export default class TomorrowCommand extends Command {
 
     async exec(user: User, msg: Message): Promise<void> {
         if(!user.group) {
-            Cache.bot.sendMessage(msg.chat.id, "У меня нет данных о тебе. Напиши /start" + ( msg.chat.id !== user.id ? " мне личные сообщения." : "."));
+            Cache.bot.sendMessage(msg.chat.id, "У меня нет данных о тебе. Напиши /start" + ( msg.chat.type == "group" ? " мне в личные сообщения." : "."));
             return;
         }
 

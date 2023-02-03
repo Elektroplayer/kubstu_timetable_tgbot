@@ -15,7 +15,9 @@ export default class TodayCommand extends Command {
             if(!user.group) replytext += "Конкретно у тебя не установлена некоторая важная для меня информация. Давай поговорим в личных сообщениях.";
             else replytext += "Можешь воспользоваться командами снизу:\n\n/today - Расписание на сегодня\n/tomorrow - Расписание на завтра\n/nearest - Ближайшее расписание\n\nПоддержка: @Elektroplayer_xXx\nДонат: qiwi.com/n/ELECTRO303\nGitHub: github.com/Elektroplayer/kubgtu_lessons_tgbot";
             
-            Cache.bot.sendMessage(msg.chat.id, replytext);
+            Cache.bot.sendMessage(msg.chat.id, replytext, {
+                disable_web_page_preview: true
+            });
         } else {
             if(!user.group) {
                 user.scene = Cache.scenes.find(s => s.name == "settings")
