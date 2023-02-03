@@ -3,17 +3,17 @@ import Schedules from "../models/Schedules.js";
 import Events from "../models/Events.js";
 
 export default class Group {
-    name: string;
     kurs: number;
-    instId: number;
     parser: Parser;
     schedule?: Schedule;
 
-    constructor(name: string, kurs: number, instId: number) {
-        this.name    = name;
-        this.kurs    = kurs;
-        this.instId  = instId;
-        this.parser  = new Parser(instId, kurs, name);
+    constructor(public name: string, public instId: number) {
+        let year = +(name[0]+name[1])
+        let now  = new Date();
+
+        this.kurs    = now.getUTCFullYear() - 2000 - (now.getUTCMonth() >= 6 ? 0 : 1) - year + 1; // FIXME: Будет работать до 2100 года
+
+        this.parser  = new Parser(instId, this.kurs, name);
     }
 
     async getTextSchedule(day = new Date().getDay(), week = new Date().getWeek()%2==0) {

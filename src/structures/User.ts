@@ -24,20 +24,17 @@ export default class User {
     async initGroup() {
         let userData = await Users.findOne({userId: this.id}).exec()
 
-        if(!userData) return;
-
-        if(userData.inst_id && userData.kurs && userData.group) this.setGroup(userData.group, userData.kurs, userData.inst_id)
+        if(userData?.inst_id && userData?.group) this.setGroup(userData.group, userData.inst_id)
     }
 
     /**
      * Обновление данных
      */
-    async updateData(opt: { instId: number, kurs: number, group: string }) {
+    async updateData(opt: { instId: number, group: string }) {
         let userData = await Users.findOne({userId: this.id}).exec()
 
         if(userData) {
             userData.inst_id = opt.instId;
-            userData.kurs = opt.kurs;
             userData.group = opt.group;
 
             userData.save().catch(console.log);
@@ -45,26 +42,25 @@ export default class User {
             new Users({
                 userId: this.id,
                 inst_id: opt.instId,
-                kurs: opt.kurs,
                 group: opt.group
             }).save().catch(console.log);
         }
 
-        this.setGroup(opt.group, opt.kurs, opt.instId)
+        this.setGroup(opt.group, opt.instId)
     }
 
     /**
      * Устновка текущей группы у человека
      */
-    setGroup(group:string, kurs: number | string, inst_id:number | string) {
-        let groupClass = Cache.groups.find(g => g.name == group)
+    setGroup(group:string, inst_id:number | string) {
+        this.group = Cache.groups.find(g => g.name == group)
 
-        if(!groupClass) {
-            let newGroup = new Group(group, +kurs, +inst_id);
+        if(!this.group) {
+            let newGroup = new Group(group, +inst_id);
 
             Cache.groups.push(newGroup);
 
             this.group = newGroup;
-        } else this.group = groupClass;
+        }
     }
 }

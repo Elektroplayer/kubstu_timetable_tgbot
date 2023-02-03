@@ -21,7 +21,6 @@ export default class FinalQuery extends Query {
         let group = query.data!.slice(15,query.data!.length);
         user.updateData({
             instId: db.inst_id!,
-            kurs: db.kurs!,
             group
         });
 

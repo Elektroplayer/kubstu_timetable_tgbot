@@ -2,10 +2,6 @@ import mongoose from "mongoose";
 
 const schema = new mongoose.Schema({
     group: String,
-    leader: {
-        type: String,
-        default: undefined
-    },
     updateDate: Date,
     days: [{
         daynum: Number,
