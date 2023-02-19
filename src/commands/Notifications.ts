@@ -1,5 +1,5 @@
 import { Message } from "node-telegram-bot-api";
-import { instKeyboard, mainKeyboard, settingsKeyboard } from "../lib/Keyboards.js";
+import { mainKeyboard } from "../lib/Keyboards.js";
 import Command from "../structures/Command.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
@@ -17,12 +17,17 @@ export default class TodayCommand extends Command {
 
         user.scene = Cache.scenes.find(s => s.name == "main");
 
-        Cache.bot.sendMessage(msg.chat.id, `Напоминания ${ msg.text == "🔔 Включить напоминания" ? "включены" : "выключены"}`, {
-            reply_markup: {
-                keyboard: mainKeyboard,
-                resize_keyboard: true,
-                //one_time_keyboard: true
+        let text = `Напоминания включены.\n\nТеперь бот каждый день (кроме субботы) через час после пар будете автоматически писать вам расписание на завтра.`
+
+        Cache.bot.sendMessage(msg.chat.id,
+            msg.text == "🔔 Включить напоминания" ? text : `Напоминания выключены.`,
+            {
+                reply_markup: {
+                    keyboard: mainKeyboard,
+                    resize_keyboard: true,
+                    //one_time_keyboard: true
+                }
             }
-        });
+        );
     }
 }

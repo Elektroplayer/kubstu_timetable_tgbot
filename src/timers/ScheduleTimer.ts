@@ -7,13 +7,13 @@ export default class TestTimer extends Timer {
     time = 0;
 
     async init() {
-        new CronJob('0 40 9 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 9}); // После первой пары
-        new CronJob('0 20 11 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 11}); // второй
-        new CronJob('0 20 13 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 12}); // третьей
-        new CronJob('0 00 15 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 14}); // четвёртой
-        new CronJob('0 40 16 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 16}); // пятой
-        new CronJob('0 20 18 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 18}); // шестой
-        new CronJob('0 00 20 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 19}); // и даже седьмой
+        new CronJob('0 40 9 * * 0-5', this.exec, null, true, 'Europe/Moscow', {time: 9}); // После первой пары
+        new CronJob('0 20 11 * * 0-5', this.exec, null, true, 'Europe/Moscow', {time: 11}); // второй
+        new CronJob('0 20 13 * * 0-5', this.exec, null, true, 'Europe/Moscow', {time: 12}); // третьей
+        new CronJob('0 00 15 * * 0-5', this.exec, null, true, 'Europe/Moscow', {time: 14}); // четвёртой
+        new CronJob('0 40 16 * * 0-5', this.exec, null, true, 'Europe/Moscow', {time: 16}); // пятой
+        new CronJob('0 20 18 * * 0-5', this.exec, null, true, 'Europe/Moscow', {time: 18}); // шестой
+        new CronJob('0 00 20 * * 0-5', this.exec, null, true, 'Europe/Moscow', {time: 19}); // и даже седьмой
     }
 
     async exec() {
@@ -37,7 +37,7 @@ export default class TestTimer extends Timer {
             if(todayScheduleArray == null) return; // ...расписания нет вообще.
 
             if(todayScheduleArray.length == 0) {
-                if(this.time != 9) return // ...расписания нет, а время уже не 9
+                if(this.time != 9) return // ...расписания на сегодня нет, а время уже не 9
             } else if(this.time != +todayScheduleArray[todayScheduleArray.length-1].time.split(":")[1].split(" - ")[1]) return; // ...ещё не время (отправляем только, после пар)
 
             console.log(`${user.id}, ${user.group?.name}`)

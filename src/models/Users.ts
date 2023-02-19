@@ -7,6 +7,10 @@ const schema = new mongoose.Schema({
     notifications: {
         type: Boolean,
         default: false
+    },
+    token: {
+        type: String,
+        default: undefined
     }
 }, { collection: "users" });
 

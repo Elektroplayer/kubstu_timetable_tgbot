@@ -21,12 +21,12 @@ declare global {
         auditory?: string,
         remark?: string,
         percent?: string,
-        flow?: booleanTelegramBot
+        flow?: boolean
     }
 
     interface Day {
-        daynum: Number,
-        even: Boolean,
+        daynum: number,
+        even: boolean,
         daySchedule: Lesson[]
     }
     
@@ -34,10 +34,6 @@ declare global {
         updateDate: Date,
         days: Day[]
     }
-
-    // interface BotEvents {
-    //     'message': [message: TelegramBot.Message, metadata: TelegramBot.Metadata]
-    // }
 
     // Костыль, но работает
     type BotEvents = TelegramBot.MessageType | 'message'
