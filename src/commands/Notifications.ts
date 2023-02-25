@@ -3,7 +3,7 @@ import { mainKeyboard } from "../lib/Keyboards.js";
 import Command from "../structures/Command.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
-import Users from "../models/Users.js";
+import Users from "../models/UsersModel.js";
 
 export default class TodayCommand extends Command {
     name = ["🔔 Включить напоминания", "🔕 Выключить напоминания"];

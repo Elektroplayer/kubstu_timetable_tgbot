@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
 
 const schema = new mongoose.Schema({
-    userId: String,
+    userId: {
+        type: String,
+        required: true,
+        unique: true
+    },
     inst_id: Number,
     group: String,
     notifications: {

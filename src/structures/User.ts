@@ -1,6 +1,6 @@
 import Scene from "./Scene.js";
 import Group from "./Group.js";
-import Users from "../models/Users.js";
+import Users from "../models/UsersModel.js";
 import Cache from "../lib/Cache.js";
 
 export default class User {

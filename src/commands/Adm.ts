@@ -9,7 +9,7 @@ export default class AdminCommand extends Command {
 
     async exec(user: User, msg: Message): Promise<void> {
         if(user.id !== 588163528) {
-            console.log(user.id);
+            console.log(`Этот человек всё узнал: ${user.id}`);
             Cache.bot.sendMessage(msg.chat.id, "Зря ты это написал... Мои люди уже выехали за тобой, чтобы поговорить...");
             return;
         }

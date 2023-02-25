@@ -1,6 +1,6 @@
 import Parser from "./Parser.js";
-import Schedules from "../models/Schedules.js";
-import Events from "../models/Events.js";
+import Schedules from "../models/GroupsModel.js";
+import Events from "../models/EventsModel.js";
 
 export default class Group {
     kurs: number;
@@ -73,6 +73,16 @@ export default class Group {
         return this.schedule;
     }
 
+    genToken() {
+        let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
+        let token = "";
+        for (var i=0; i<32; i++) {
+            let j = Math.floor(Math.random() * (chars.length-1));
+            token += chars[j];
+        }
+        return `${this.name}:${token}`
+    }
+
     /**
      * Ищет расписание.
      * Если оно есть в БД и оно не устарело, устанавливает его.
@@ -83,19 +93,23 @@ export default class Group {
     async updateSchedule() {
         let dbResponse = await Schedules.findOne({group: this.name}).exec()
 
+        // dbResponse = dbResponse?.timetable
+
         if(dbResponse) {
-            if(new Date().valueOf() - dbResponse?.updateDate?.valueOf()! < 1000 * 60 * 60 * 24) return this.setSchedule(dbResponse.days as Day[], dbResponse.updateDate!)
+            if(new Date().valueOf() - dbResponse.timetable.updateDate?.valueOf()! < 1000 * 60 * 60 * 24)
+                return this.setSchedule(dbResponse.timetable.days as Day[], dbResponse.timetable.updateDate)
             else {
                 try {
                     let days = await this.parser.parseSchedule();
 
-                    dbResponse.days = days;
-                    dbResponse.updateDate = new Date();
+                    dbResponse.timetable.days = days;
+                    dbResponse.timetable.updateDate = new Date();
+
                     dbResponse.save().catch(console.log);
 
                     return this.setSchedule(days);
                 } catch (error) {
-                    return this.setSchedule(dbResponse.days as Day[], dbResponse.updateDate!)
+                    return this.setSchedule(dbResponse.timetable.days as Day[], dbResponse.timetable.updateDate!)
                 }
             }
         } else {
@@ -104,8 +118,11 @@ export default class Group {
 
                 new Schedules({
                     group: this.name,
-                    days,
-                    updateDate: new Date()
+                    timetable: {
+                        days,
+                        updateDate: new Date()
+                    },
+                    token: this.genToken()
                 }).save().catch(console.log);
 
                 return this.setSchedule(days);
@@ -122,15 +139,18 @@ export default class Group {
             let dbResponse = await Schedules.findOne({group: this.name}).exec()
 
             if(dbResponse) {
-                dbResponse.days = days;
-                dbResponse.updateDate = new Date();
+                dbResponse.timetable.days = days;
+                dbResponse.timetable.updateDate = new Date();
 
                 dbResponse.save().catch(console.log)
             } else {
                 new Schedules({
                     group: this.name,
-                    days,
-                    updateDate: new Date()
+                    timetable: {
+                        days,
+                        updateDate: new Date()
+                    },
+                    token: this.genToken()
                 }).save().catch(console.log);
             }
 
