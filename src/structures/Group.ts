@@ -16,6 +16,17 @@ export default class Group {
         this.parser  = new Parser(instId, this.kurs, name);
     }
 
+    async getRawSchedule(day = new Date().getDay(), week = new Date().getWeek()%2==0) {
+        if(!this.schedule || new Date().valueOf() - this.schedule.updateDate?.valueOf()! > 1000 * 60 * 60 * 24) {
+            let r = await this.updateSchedule();
+            if(r == null) return null;
+        }
+
+        let daySchedule = this.schedule!.days.find(elm => elm.daynum == day && elm.even == week)?.daySchedule ?? [];
+
+        return daySchedule;
+    }
+
     async getTextSchedule(day = new Date().getDay(), week = new Date().getWeek()%2==0) {
         let out = "";
         let daySchedule = await this.getRawSchedule(day, week);
@@ -34,16 +45,34 @@ export default class Group {
         return `<b>${this.parser.days[day]} / ${week ? "Чётная" : "Нечётная"} неделя</b>` + (!out ? "\nПар нет! Передохни:з" : out);
     }
 
-    async getRawSchedule(day = new Date().getDay(), week = new Date().getWeek()%2==0) {
+    
+    async getRawFullSchedule() {
         if(!this.schedule || new Date().valueOf() - this.schedule.updateDate?.valueOf()! > 1000 * 60 * 60 * 24) {
             let r = await this.updateSchedule();
             if(r == null) return null;
         }
 
-        let daySchedule = this.schedule!.days.find(elm => elm.daynum == day && elm.even == week)?.daySchedule ?? [];
-
-        return daySchedule;
+        return this.schedule
     }
+
+    async getTextFullSchedule(week:boolean) {
+        let out = "";
+        let schedule = await this.getRawFullSchedule();
+
+        if(schedule == null || schedule == undefined) return "<b>Произошла ошибка<b>\nСкорее всего сайт с расписанием не работает...";
+        
+        out += `<u><b>${week ? "ЧЁТНАЯ" : "НЕЧЁТНАЯ"} НЕДЕЛЯ:</b></u>\n`;
+        schedule.days.filter(elm => elm.even == week).forEach(day => {
+            out += `\n<b>${this.parser.days[day.daynum]}:</b>\n`;
+            
+            day.daySchedule.forEach(lesson => {
+                out += `  ${lesson.number}. ${lesson.name} [${lesson.paraType}] (${lesson.auditory})\n`
+            });
+        });
+
+        return out;
+    }
+
 
     async getTextEvents(date = new Date()): Promise<string | null> {
         date.setUTCHours(0,0,0,0);
@@ -73,6 +102,9 @@ export default class Group {
         return this.schedule;
     }
 
+    /**
+     * Генерирует 32-символьный токен
+     */
     genToken() {
         let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
         let token = "";
@@ -86,14 +118,12 @@ export default class Group {
     /**
      * Ищет расписание.
      * Если оно есть в БД и оно не устарело, устанавливает его.
-     * Если оно есть в БД, но оно устарело, парсит информацию с сайта (при этом если сайт не работает, даёт что есть) и обновляет расписание в БД.
+     * Если оно есть в БД, но оно устарело, парсит информацию с сайта и обновляет расписание в БД (при этом если сайт не работает, даёт что есть ничего не обновляя).
      * Если записи в БД нет, парсит расписание и создаёт запись в БД.
      * Если сайт не работает и в БД записей нет, выдаёт null.
      */
     async updateSchedule() {
         let dbResponse = await Schedules.findOne({group: this.name}).exec()
-
-        // dbResponse = dbResponse?.timetable
 
         if(dbResponse) {
             if(new Date().valueOf() - dbResponse.timetable.updateDate?.valueOf()! < 1000 * 60 * 60 * 24)

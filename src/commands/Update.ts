@@ -13,13 +13,27 @@ export default class TodayCommand extends Command {
             return;
         }
 
+        if(user.group.schedule && new Date().valueOf() - user.group.schedule?.updateDate.valueOf() < 1000 * 60 * 60) {
+            Cache.bot.sendMessage(
+                msg.chat.id,
+                "<b>Не так быстро!</b> Прошло меньше часа с момента последнего обновления!",
+                {
+                    parse_mode: "HTML",
+                    reply_markup: {
+                        remove_keyboard: msg.chat.type == "group"
+                    }
+                }
+            );
+
+            return;
+        }
+
         let r = user.group.updateScheduleFromSite() // response
         
         Cache.bot.sendMessage(
             msg.chat.id,
             r == null ? "Произошла ошибка обновления! Возможно, сайт не работает." : "Расписание обновлено принудительно!",
             {
-                parse_mode: "HTML",
                 reply_markup: {
                     remove_keyboard: msg.chat.type == "group"
                 }
