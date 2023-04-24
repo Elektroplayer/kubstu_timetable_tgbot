@@ -1,5 +1,4 @@
 import { CallbackQuery } from "node-telegram-bot-api";
-import { mainKeyboard } from "../lib/Keyboards.js";
 import Query from "../structures/Query.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
@@ -37,7 +36,7 @@ export default class FinalQuery extends Query {
 
         Cache.bot.sendMessage(user.id, "Выберете, что вам нужно на клавиатуре", {
             reply_markup: {
-                keyboard: mainKeyboard,
+                keyboard: user.getMainKeyboard(),
                 resize_keyboard: true,
             }
         });

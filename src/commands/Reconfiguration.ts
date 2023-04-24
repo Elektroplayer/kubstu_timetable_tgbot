@@ -3,9 +3,10 @@ import Command from "../structures/Command.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
 import { instKeyboard } from "../lib/Keyboards.js";
+import { commandName } from "../lib/Utils.js";
 
 export default class TodayCommand extends Command {
-    name = ["⚙️ Перенастроить бота"];
+    name = [...commandName("Перенастроить бота", "⚙️")];
     sceneName = ["settings"];
 
     async exec(user: User, msg: Message): Promise<void> {

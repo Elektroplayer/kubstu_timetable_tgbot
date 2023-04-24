@@ -3,9 +3,10 @@ import Command from "../structures/Command.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
 import SponsorMessagesMiddleware from "../middlewares/SponsorMessages.js";
+import { commandName } from "../lib/Utils.js";
 
 export default class NearestCommand extends Command {
-    name = ["⏩ Ближайшее", "/nearest", "/nearest@kubstu_timetable_bot"];
+    name = [...commandName("Ближайшее", "⏩"), "/nearest", "/nearest@kubstu_timetable_bot"];
     sceneName = ["main"];
     middlewares = [SponsorMessagesMiddleware];
 

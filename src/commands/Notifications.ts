@@ -1,12 +1,12 @@
 import { Message } from "node-telegram-bot-api";
-import { mainKeyboard } from "../lib/Keyboards.js";
 import Command from "../structures/Command.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
 import Users from "../models/UsersModel.js";
+import { commandName } from "../lib/Utils.js";
 
 export default class TodayCommand extends Command {
-    name = ["🔔 Включить напоминания", "🔕 Выключить напоминания"];
+    name = [...commandName("Включить напоминания", "🔔"), ...commandName("Выключить напоминания", "🔕")];
     sceneName = ["settings"];
 
     async exec(user: User, msg: Message): Promise<void> {
@@ -23,7 +23,7 @@ export default class TodayCommand extends Command {
             msg.text == "🔔 Включить напоминания" ? text : `Напоминания выключены.`,
             {
                 reply_markup: {
-                    keyboard: mainKeyboard,
+                    keyboard: user.getMainKeyboard(),
                     resize_keyboard: true,
                     //one_time_keyboard: true
                 }

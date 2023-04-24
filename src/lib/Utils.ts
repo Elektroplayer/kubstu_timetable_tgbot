@@ -16,7 +16,12 @@ export const daysEven = [
     "Чёт Сб",
 ];
 
+export function commandName(name:string, emoji:string) {
+    return [name, `${emoji} ${name}`]
+}
+
 export default {
     days,
     daysEven,
+    commandName
 };

@@ -12,6 +12,10 @@ const schema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    emoji: {
+        type: Boolean,
+        default: true
+    },
     token: {
         type: String,
         default: undefined

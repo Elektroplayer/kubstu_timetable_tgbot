@@ -2,10 +2,13 @@ import Scene from "./Scene.js";
 import Group from "./Group.js";
 import Users from "../models/UsersModel.js";
 import Cache from "../lib/Cache.js";
+import { KeyboardButton } from "node-telegram-bot-api";
 
 export default class User {
     scene?: Scene;
     group?: Group;
+    notifications?: boolean;
+    emoji?:boolean;
 
     /**
      * Используется для временного хранения данных при настройке
@@ -24,7 +27,11 @@ export default class User {
     async initGroup() {
         let userData = await Users.findOne({userId: this.id}).exec()
 
-        if(userData?.inst_id && userData?.group) this.setGroup(userData.group, userData.inst_id)
+        if(userData?.inst_id && userData?.group) {
+            this.setGroup(userData.group, userData.inst_id)
+            this.notifications = userData?.notifications
+            this.emoji = userData?.emoji
+        }
     }
 
     /**
@@ -62,5 +69,49 @@ export default class User {
 
             this.group = newGroup;
         }
+    }
+
+    getMainKeyboard():KeyboardButton[][] {
+        console.log(this.emoji)
+        return [
+            [
+                {
+                    text: (this.emoji ? "⏺️ " : "") + "Сегодняшнее",
+                },{
+                    text: (this.emoji ? "▶️ " : "") + "Завтрашнее",
+                }
+            ],[
+                {
+                    text: (this.emoji ? "⏩ " : "") + "Ближайшее"
+                }, {
+                    text: (this.emoji ? "🔀 " : "") + "Выбрать день",
+                }
+            ],[
+                {
+                    text: (this.emoji ? "⚙️ " : "") + "Настройки",
+                },
+            ],
+        ]
+    }
+
+    /**
+     * Получение клавиатуры настроек
+     */
+    getSettingsKeyboard():KeyboardButton[][] {
+        return [
+            [
+                {
+                    text: this.notifications ? ( (this.emoji ? "🔕 " : "") + "Выключить напоминания") : ((this.emoji ? "🔔 " : "") + "Включить напоминания")
+                }
+            ],[
+                {
+                    text: (this.emoji ? "⚙️ " : "") + "Перенастроить бота"
+                }
+            ],[
+                {
+                    text: (this.emoji ? "🛑 " : "") + "Отмена"
+                }
+            ]
+        ]
     }
 }

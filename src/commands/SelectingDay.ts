@@ -2,7 +2,6 @@ import { Message } from "node-telegram-bot-api";
 import Command from "../structures/Command.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
-import { mainKeyboard } from "../lib/Keyboards.js";
 
 export default class SelectingDayCommand extends Command {
     name = [
@@ -46,7 +45,7 @@ export default class SelectingDayCommand extends Command {
             {
                 parse_mode: "HTML",
                 reply_markup: {
-                    keyboard: mainKeyboard,
+                    keyboard: user.getMainKeyboard(),
                     resize_keyboard: true
                 }
             }

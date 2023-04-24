@@ -2,11 +2,11 @@ import { Message } from "node-telegram-bot-api";
 import Command from "../structures/Command.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
-import { settingsKeyboard } from "../lib/Keyboards.js";
 import Users from "../models/UsersModel.js";
+import { commandName } from "../lib/Utils.js";
 
 export default class TodayCommand extends Command {
-    name = ["⚙️ Настройки", "/settings", "/settings@kubstu_timetable_bot"];
+    name = [...commandName("Настройки", "⚙️"), "/settings", "/settings@kubstu_timetable_bot"];
     sceneName = ["main"];
 
     async exec(user: User, msg: Message): Promise<void> {
@@ -28,7 +28,7 @@ export default class TodayCommand extends Command {
 
         Cache.bot.sendMessage(msg.chat.id, "Выбери, что стоит настроить", {
             reply_markup: {
-                keyboard: settingsKeyboard(userData?.notifications ?? false),
+                keyboard: user.getSettingsKeyboard(),
                 remove_keyboard: true,
                 resize_keyboard: true,
                 //one_time_keyboard: true
