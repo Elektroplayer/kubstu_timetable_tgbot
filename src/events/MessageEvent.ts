@@ -16,7 +16,12 @@ export default class MessageEvent extends Event {
         let command = user.scene!.commands.find((c) => c.name.includes(msg.text!) );
 
         if (!command) {
-            if (msg.chat.type !== "group") await Cache.bot.sendMessage(msg.chat.id, "Неизвестная команда");
+            if (msg.chat.type !== "group") await Cache.bot.sendMessage(msg.chat.id, "Неизвестная команда", {
+                reply_markup: {
+                    keyboard: user.getMainKeyboard(),
+                    resize_keyboard: true,
+                }
+            });
         } else {
             console.log( `${msg.from?.username ?? msg.from?.first_name ?? "Нет ника (?)"}, ${msg.from.id}: ${user.group?.name ?? "Не выбрана"}; ${msg.text};` );
 

@@ -72,7 +72,6 @@ export default class User {
     }
 
     getMainKeyboard():KeyboardButton[][] {
-        console.log(this.emoji)
         return [
             [
                 {
@@ -102,6 +101,10 @@ export default class User {
             [
                 {
                     text: this.notifications ? ( (this.emoji ? "🔕 " : "") + "Выключить напоминания") : ((this.emoji ? "🔔 " : "") + "Включить напоминания")
+                }
+            ],[
+                {
+                    text: this.emoji ? ( (this.emoji ? "🙅‍♂️ " : "") + "Выключить эмодзи") : "Включить эмодзи" // Тут нет эмодзи, потому что оно тут в любом случае будет отсутствовать
                 }
             ],[
                 {

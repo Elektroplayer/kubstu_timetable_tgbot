@@ -10,17 +10,20 @@ export default class TodayCommand extends Command {
     sceneName = ["settings"];
 
     async exec(user: User, msg: Message): Promise<void> {
-        let userData = await Users.findOne({userId: user.id}).exec()
+        let userData = await Users.findOne({userId: user.id}).exec();
+        let condition = commandName("Включить напоминания", "🔔").includes(msg.text!);
 
-        userData!.notifications = msg.text == "🔔 Включить напоминания"
-        userData!.save().catch(console.log)
+        userData!.notifications = condition;
+        user.notifications = condition;
+
+        userData!.save().catch(console.log);
 
         user.scene = Cache.scenes.find(s => s.name == "main");
 
-        let text = `Напоминания включены.\n\nТеперь бот каждый день (кроме субботы) через час после пар будете автоматически писать вам расписание на завтра.`
+        let text = `Напоминания включены.\n\nТеперь бот каждый день (кроме субботы) через час после пар будете автоматически писать вам расписание на завтра.`;
 
         Cache.bot.sendMessage(msg.chat.id,
-            msg.text == "🔔 Включить напоминания" ? text : `Напоминания выключены.`,
+            condition ? text : `Напоминания выключены.`,
             {
                 reply_markup: {
                     keyboard: user.getMainKeyboard(),

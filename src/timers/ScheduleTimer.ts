@@ -40,7 +40,7 @@ export default class TestTimer extends Timer {
                 if(this.time != 9) return // ...расписания на сегодня нет, а время уже не 9
             } else if(this.time != +todayScheduleArray[todayScheduleArray.length-1].time.split(":")[1].split(" - ")[1]) return; // ...ещё не время (отправляем только, после пар)
 
-            console.log(`${user.id}, ${user.group?.name}`)
+            console.log(` ${user.id}, ${user.group?.name}`)
 
             text = await user.group.getTextSchedule(dateTomorrow.getDay(), dateTomorrow.getWeek()%2==0);
 
