@@ -9,6 +9,7 @@ export default class User {
     group?: Group;
     notifications?: boolean;
     emoji?:boolean;
+    token?:string;
 
     /**
      * Используется для временного хранения данных при настройке
@@ -22,15 +23,17 @@ export default class User {
     constructor(public id:number) {}
 
     /**
-     * Инициализация группы
+     * Инициализация
      */
-    async initGroup() {
-        let userData = await Users.findOne({userId: this.id}).exec()
+    async init() {
+        let userData = await Users.findOne({userId: this.id}).exec();
 
         if(userData?.inst_id && userData?.group) {
-            this.setGroup(userData.group, userData.inst_id)
-            this.notifications = userData?.notifications
-            this.emoji = userData?.emoji
+            await this.setGroup(userData.group, userData.inst_id);
+
+            this.notifications = userData?.notifications;
+            this.emoji = userData?.emoji;
+            this.token = userData?.token;
         }
     }
 
@@ -59,11 +62,12 @@ export default class User {
     /**
      * Устновка текущей группы у человека
      */
-    setGroup(group:string, inst_id:number | string) {
+    async setGroup(group:string, inst_id:number | string) {
         this.group = Cache.groups.find(g => g.name == group)
 
         if(!this.group) {
             let newGroup = new Group(group, +inst_id);
+            await newGroup.init();
 
             Cache.groups.push(newGroup);
 
@@ -71,6 +75,23 @@ export default class User {
         }
     }
 
+    /**
+     * Установка токена
+     */
+    async setToken(token:string) {
+        this.token = token;
+
+        let userData = await Users.findOne({userId: this.id}).exec()
+
+        if(userData) {
+            userData.token = token;
+            userData.save().catch(console.log);
+        }
+    }
+
+    /**
+     * Получение главной клавиатуры
+     */
     getMainKeyboard():KeyboardButton[][] {
         return [
             [

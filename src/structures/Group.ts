@@ -6,6 +6,7 @@ export default class Group {
     kurs: number;
     parser: Parser;
     schedule?: Schedule;
+    token?: string;
 
     constructor(public name: string, public instId: number) {
         let year = +(name[0]+name[1])
@@ -14,6 +15,10 @@ export default class Group {
         this.kurs    = now.getUTCFullYear() - 2000 - (now.getUTCMonth() >= 6 ? 0 : 1) - year + 1; // FIXME: Будет работать до 2100 года
 
         this.parser  = new Parser(instId, this.kurs, name);
+    }
+
+    async init() {
+        await this.initToken()
     }
 
     async getRawSchedule(day = new Date().getDay(), week = new Date().getWeek()%2==0) {
@@ -77,18 +82,30 @@ export default class Group {
     async getTextEvents(date = new Date()): Promise<string | null> {
         date.setUTCHours(0,0,0,0);
 
-        let dayEvents = await Events.find({date});
-        let out = "";
+        // События ищутся так, чтобы они или совпадали по дате или были между начальной конечной датой,
+        // при этом если у события есть список групп, курсов или институтов, для которых предназначается событие,
+        // то группе, под эти критерии не подходящей, событие показываться не будет.
+        let filter = {
+            $or: [
+                {
+                    date: date
+                }, {
+                    startDate: { $lte: date }, endDate: { $gte: date }
+                }
+            ],
+            $and: [
+                {
+                    $or: [ { groups: undefined }, { groups: this.name } ]
+                }, {
+                    $or: [ { kurses: undefined }, { kurses: this.kurs } ]
+                }, {
+                    $or: [ { inst_ids: undefined }, { inst_ids: this.instId } ]
+                }
+            ]
+        }
 
-        dayEvents.filter( 
-            (elm) => (!elm.groups.length || elm.groups?.includes(this.name)) && 
-            (!elm.kurses.length || elm.kurses?.includes(this.kurs)) &&
-            (!elm.inst_ids.length || elm.inst_ids?.includes(this.instId))
-        )
-            .forEach((elm, i) => {
-                out += `\n\n${i+1}. <b>${elm.name}</b> <i>(${elm.evTime})</i>`;
-                if(elm.note) out += `\n  ${elm.note}`;
-            });
+        let dayEvents = await Events.find(filter);
+        let out = dayEvents.reduce((acc, elm, i) => acc + `\n\n${i+1}. <b>${elm.name}</b>` + (elm.note ? `\n  ${elm.note}` : ""), "")
 
         return out ? ("<b>СОБЫТИЯ:</b>" + out) : null;
     }
@@ -188,5 +205,9 @@ export default class Group {
         } catch (error) {
             return null
         }
+    }
+
+    async initToken() {
+        this.token = (await Schedules.findOne({group: this.name}).exec())?.token;
     }
 }

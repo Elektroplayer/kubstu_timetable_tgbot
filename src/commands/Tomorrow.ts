@@ -27,6 +27,7 @@ export default class TomorrowCommand extends Command {
         else text = schedule;
 
         if(events) text += `\n\n${events}`;
+        // if(events && (!user.group.token || user.token == user.group.token)) text += `\n\n${events}`;
         
         Cache.bot.sendMessage(
             msg.chat.id,

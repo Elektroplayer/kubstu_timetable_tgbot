@@ -6,7 +6,8 @@ const schema = new mongoose.Schema({
     inst_ids: [Number],
     name: String,
     date: Date,
-    evTime: String,
+    startDate: Date,
+    endDate: Date,
     note: {
         type: String,
         default: null

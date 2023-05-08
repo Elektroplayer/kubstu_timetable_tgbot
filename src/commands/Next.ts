@@ -31,6 +31,7 @@ export default class NearestCommand extends Command {
         let text = schedule && schedule.indexOf("Пар нет! Передохни:з") == -1 ? schedule : "<b>Ближайшего расписания не найдено...</b> <i>или что-то пошло не так...</i>";
 
         if(events) text += `\n\n${events}`;
+        // if(events && (!user.group.token || user.token == user.group.token)) text += `\n\n${events}`;
         
         Cache.bot.sendMessage(
             msg.chat.id,

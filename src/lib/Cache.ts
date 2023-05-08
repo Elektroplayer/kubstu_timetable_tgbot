@@ -19,7 +19,7 @@ class Cache {
         else {
             let newUser = new User(userId);
 
-            await newUser.initGroup();
+            await newUser.init();
 
             this.users.push(newUser);
 
