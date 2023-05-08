@@ -17,7 +17,7 @@ export default class TestTimer extends Timer {
     }
 
     async exec() {
-        let usersID = await Users.find({notifications: true}).exec()
+        let usersID = await Users.find({notifications: true, group: {$exist: true}}).exec()
         
         let dateToday = new Date();
         let dateTomorrow = new Date();
@@ -51,8 +51,11 @@ export default class TestTimer extends Timer {
                 user.id,
                 text,
                 {parse_mode: "HTML"}
-            );
+            ).catch(err => {
+                console.log(` Bot was blocked by ${user.id}`);
+                console.log(`${err}`);
+                console.log(err);
+            });
         });
-        // console.log(usersID);
     }
 }

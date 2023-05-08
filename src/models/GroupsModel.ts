@@ -31,7 +31,7 @@ const schema = new mongoose.Schema({
         type: String,
         default: undefined
     }
-}, { collection: "groups" });
+}, { collection: "groups", versionKey: false });
 
 export default mongoose.model("groups", schema);
 
