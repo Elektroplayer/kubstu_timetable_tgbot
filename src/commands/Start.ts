@@ -11,9 +11,9 @@ export default class TodayCommand extends Command {
     async exec(user: User, msg: Message): Promise<void> {
         let replytext = `Приветствую, ${msg.from!.username}\n\n`;
 
-        if(msg.chat.type == "group") {
+        if(["group", "supergroup"].includes(msg.chat.type)) {
             if(!user.group) replytext += "Конкретно у тебя не установлена некоторая важная для меня информация. Давай поговорим в личных сообщениях.";
-            else replytext += "Можешь воспользоваться командами снизу:\n\n/today - Расписание на сегодня\n/tomorrow - Расписание на завтра\n/nearest - Ближайшее расписание\n\nПоддержка: @Elektroplayer_xXx\nДонат: qiwi.com/n/ELECTRO303\nGitHub: github.com/Elektroplayer/kubgtu_lessons_tgbot";
+            else replytext += "Можешь воспользоваться командами снизу:\n\n/today - Расписание на сегодня\n/tomorrow - Расписание на завтра\n/nearest - Ближайшее расписание\n\nПоддержка: @Elektroplayer_xXx\nПоддержать меня: 5536 9141 8751 4363 (T)/2202 2050 2291 3625 (C)\nGitHub: github.com/Elektroplayer/kubgtu_lessons_tgbot";
             
             Cache.bot.sendMessage(msg.chat.id, replytext, {
                 disable_web_page_preview: true
@@ -33,7 +33,7 @@ export default class TodayCommand extends Command {
                 });
 
             } else {
-                replytext += "Поддержка: @Elektroplayer_xXx\nДонат: qiwi.com/n/ELECTRO303\nGitHub: github.com/Elektroplayer/kubgtu_lessons_tgbot\n\nМожешь выбрать действие снизу.";
+                replytext += "Поддержка: @Elektroplayer_xXx\nПоддержать меня: 5536 9141 8751 4363 (T)/2202 2050 2291 3625 (C)\nGitHub: github.com/Elektroplayer/kubgtu_lessons_tgbot\n\nМожешь выбрать действие снизу.";
 
                 user.scene = Cache.scenes.find(s => s.name == "main");
 

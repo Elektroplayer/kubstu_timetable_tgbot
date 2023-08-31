@@ -29,7 +29,7 @@ export default class SelectingDayCommand extends Command {
             return;
         }
 
-        if (msg.chat.type == "group") return;
+        if (["group", "supergroup"].includes(msg.chat.type)) return;
 
         let text;
         let day       = (this.name.indexOf(msg.text!) + 1) % 6 || 6;

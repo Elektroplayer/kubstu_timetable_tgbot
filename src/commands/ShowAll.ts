@@ -36,7 +36,7 @@ export default class TodayCommand extends Command {
                 {
                     parse_mode: "HTML",
                     reply_markup: {
-                        remove_keyboard: msg.chat.type == "group"
+                        remove_keyboard: ["group", "supergroup"].includes(msg.chat.type)
                     }
                 }
             );
@@ -47,7 +47,7 @@ export default class TodayCommand extends Command {
                 {
                     parse_mode: "HTML",
                     reply_markup: {
-                        remove_keyboard: msg.chat.type == "group"
+                        remove_keyboard: ["group", "supergroup"].includes(msg.chat.type)
                     }
                 }
             );
