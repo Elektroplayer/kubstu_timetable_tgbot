@@ -13,7 +13,7 @@ export default class TodayCommand extends Command {
 
         if(["group", "supergroup"].includes(msg.chat.type)) {
             if(!user.group) replytext += "Конкретно у тебя не установлена некоторая важная для меня информация. Давай поговорим в личных сообщениях.";
-            else replytext += "Можешь воспользоваться командами снизу:\n\n/today - Расписание на сегодня\n/tomorrow - Расписание на завтра\n/nearest - Ближайшее расписание\n\nПоддержка: @Elektroplayer_xXx\nПоддержать меня: 5536 9141 8751 4363 (T)/2202 2050 2291 3625 (C)\nGitHub: github.com/Elektroplayer/kubgtu_lessons_tgbot";
+            else replytext += "Можешь воспользоваться командами снизу:\n\n/today - Расписание на сегодня\n/tomorrow - Расписание на завтра\n/nearest - Ближайшее расписание\n\nПоддержка: @Elektroplayer_xXx\nGitHub: github.com/Elektroplayer/kubgtu_lessons_tgbot\nПоддержать меня:\nТ: 5536 9141 8751 4363\nС: 2202 2050 2291 3625";
             
             Cache.bot.sendMessage(msg.chat.id, replytext, {
                 disable_web_page_preview: true
@@ -33,7 +33,7 @@ export default class TodayCommand extends Command {
                 });
 
             } else {
-                replytext += "Поддержка: @Elektroplayer_xXx\nПоддержать меня: 5536 9141 8751 4363 (T)/2202 2050 2291 3625 (C)\nGitHub: github.com/Elektroplayer/kubgtu_lessons_tgbot\n\nМожешь выбрать действие снизу.";
+                replytext += "Поддержка: @Elektroplayer_xXx\nGitHub: github.com/Elektroplayer/kubgtu_lessons_tgbot\nПоддержать меня:\nТ: 5536 9141 8751 4363\nС: 2202 2050 2291 3625\n\nМожешь выбрать действие снизу.";
 
                 user.scene = Cache.scenes.find(s => s.name == "main");
 
