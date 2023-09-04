@@ -7,7 +7,7 @@ export default class MessageEvent extends Event {
     name = "message" as BotEvents;
 
     async exec(msg: TelegramBot.Message): Promise<void> {
-        if (!msg.from || !msg.text) return;
+        if (!msg.from || !msg.text || msg.chat.type == "channel") return;
 
         let user = await Cache.getUser(msg.from.id);
 
@@ -16,7 +16,7 @@ export default class MessageEvent extends Event {
         let command = user.scene!.commands.find((c) => c.name.includes(msg.text!) );
 
         if (!command) {
-            if (msg.chat.type !== "group") await Cache.bot.sendMessage(msg.chat.id, "Неизвестная команда", {
+            if (msg.chat.type == "private") await Cache.bot.sendMessage(msg.chat.id, "Неизвестная команда", {
                 reply_markup: {
                     keyboard: user.getMainKeyboard(),
                     resize_keyboard: true,

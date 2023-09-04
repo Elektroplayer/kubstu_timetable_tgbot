@@ -10,7 +10,7 @@ export default class AnotherDayCommand extends Command {
     sceneName = ["main"];
 
     async exec(user: User, msg: Message): Promise<void> {
-        if (["group", "supergroup"].includes(msg.chat.type)) return;
+        if (msg.chat.type !== "private") return;
 
         if (!user.group) {
             Cache.bot.sendMessage(user.id, "У меня нет данных о тебе. Напиши /start");

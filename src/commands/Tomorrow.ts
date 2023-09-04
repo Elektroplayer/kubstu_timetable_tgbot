@@ -35,7 +35,7 @@ export default class TomorrowCommand extends Command {
             {
                 parse_mode: "HTML",
                 reply_markup: {
-                    remove_keyboard: ["group", "supergroup"].includes(msg.chat.type)
+                    remove_keyboard: msg.chat.type !== "private"
                 }
             }
         );

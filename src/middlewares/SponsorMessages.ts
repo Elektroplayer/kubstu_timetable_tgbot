@@ -16,7 +16,7 @@ class SponsorMessagesMiddleware extends Middleware {
     ];
 
     exec(user: User, msg: Message): void {
-        if(msg.chat.type == "group") return;
+        if(msg.chat.type !== "private") return;
 
         let thisUser = this.users.find(u => u.id == user.id);
 

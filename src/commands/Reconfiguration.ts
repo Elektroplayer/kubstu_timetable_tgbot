@@ -10,7 +10,7 @@ export default class TodayCommand extends Command {
     sceneName = ["settings"];
 
     async exec(user: User, msg: Message): Promise<void> {
-        if (msg.chat.type == "group") {
+        if (msg.chat.type !== "private") {
             Cache.bot.sendMessage(msg.chat.id, "Настройки доступны только в личных сообщениях.");
 
             return;

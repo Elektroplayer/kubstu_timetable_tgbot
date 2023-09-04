@@ -11,7 +11,7 @@ export default class TodayCommand extends Command {
     async exec(user: User, msg: Message): Promise<void> {
         let replytext = `Приветствую, ${msg.from!.username}\n\n`;
 
-        if(["group", "supergroup"].includes(msg.chat.type)) {
+        if(msg.chat.type !== "private") {
             if(!user.group) replytext += "Конкретно у тебя не установлена некоторая важная для меня информация. Давай поговорим в личных сообщениях.";
             else replytext += "Можешь воспользоваться командами снизу:\n\n/today - Расписание на сегодня\n/tomorrow - Расписание на завтра\n/nearest - Ближайшее расписание\n\nПоддержка: @Elektroplayer_xXx\nGitHub: github.com/Elektroplayer/kubgtu_lessons_tgbot\nПоддержать меня:\nТ: 5536 9141 8751 4363\nС: 2202 2050 2291 3625";
             
