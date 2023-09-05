@@ -7,8 +7,8 @@ import { KeyboardButton } from "node-telegram-bot-api";
 export default class User {
     scene?: Scene;
     group?: Group;
-    notifications?: boolean;
-    emoji?:boolean;
+    notifications: boolean = false;
+    emoji:boolean = true;
     token?:string;
 
     /**
@@ -31,8 +31,8 @@ export default class User {
         if(userData?.inst_id && userData?.group) {
             await this.setGroup(userData.group, userData.inst_id);
 
-            this.notifications = userData?.notifications;
-            this.emoji = userData?.emoji;
+            this.notifications = userData?.notifications ?? false;
+            this.emoji = userData?.emoji ?? true;
             this.token = userData?.token;
         }
     }
