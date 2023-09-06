@@ -52,9 +52,14 @@ export default class TestTimer extends Timer {
                 text,
                 { parse_mode: "HTML" }
             ).catch(err => {
-                console.log(` Bot was blocked by ${user.id}`);
-                console.log(`${err}`);
-                console.log(err);
+                if(`${err}` == "Error: ETELEGRAM: 403 Forbidden: bot was blocked by the user") {
+                    console.log(` Bot was blocked by ${user.id}`);
+                    console.log(`${err}`);
+                    Users.findOneAndRemove({userId: user.id});
+                } else {
+                    console.log(`"${err}"`);
+                    console.log(err);
+                }
             });
         });
     }
