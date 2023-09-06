@@ -6,7 +6,12 @@ import SponsorMessagesMiddleware from "../middlewares/SponsorMessages.js";
 import { commandName } from "../lib/Utils.js";
 
 export default class NearestCommand extends Command {
-    name = [...commandName("Ближайшее", "⏩"), "/nearest", "/nearest@kubstu_timetable_bot"];
+    // name = [...commandName("Ближайшее", "⏩"), "/nearest", "/nearest@kubstu_timetable_bot"];
+    name = commandName({
+        name: { title: "Ближайшее", emoji: "⏩"},
+        command: "nearest"
+    })
+    
     sceneName = ["main"];
     middlewares = [SponsorMessagesMiddleware];
 

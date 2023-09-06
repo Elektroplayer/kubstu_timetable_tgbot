@@ -2,9 +2,10 @@ import { Message } from "node-telegram-bot-api";
 import Command from "../structures/Command.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
+import { commandName } from "../lib/Utils.js";
 
 export default class TodayCommand extends Command {
-    name = ["/update", "/update@kubstu_timetable_bot"];
+    name = commandName({ command: "update" });
     sceneName = ["main"];
 
     async exec(user: User, msg: Message): Promise<void> {

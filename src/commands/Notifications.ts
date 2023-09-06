@@ -6,12 +6,16 @@ import Users from "../models/UsersModel.js";
 import { commandName } from "../lib/Utils.js";
 
 export default class TodayCommand extends Command {
-    name = [...commandName("Включить напоминания", "🔔"), ...commandName("Выключить напоминания", "🔕")];
+    name = commandName({ name: [
+        { title: "Включить напоминания", emoji: "🔔" },
+        { title: "Выключить напоминания", emoji: "🔕"}
+    ]});
+
     sceneName = ["settings"];
 
     async exec(user: User, msg: Message): Promise<void> {
         let userData = await Users.findOne({userId: user.id}).exec();
-        let condition = commandName("Включить напоминания", "🔔").includes(msg.text!);
+        let condition = commandName({ name: { title: "Включить напоминания", emoji: "🔔" } }).includes(msg.text!);
 
         userData!.notifications = condition;
         user.notifications = condition;

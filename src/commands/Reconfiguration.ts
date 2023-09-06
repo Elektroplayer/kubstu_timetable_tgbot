@@ -6,7 +6,7 @@ import { instKeyboard } from "../lib/Keyboards.js";
 import { commandName } from "../lib/Utils.js";
 
 export default class TodayCommand extends Command {
-    name = [...commandName("Перенастроить бота", "⚙️")];
+    name = commandName({ name: { title: "Перенастроить бота", emoji: "⚙️" } })
     sceneName = ["settings"];
 
     async exec(user: User, msg: Message): Promise<void> {

@@ -13,7 +13,7 @@ export default class MessageEvent extends Event {
 
         if (!user.scene) user.scene = Cache.scenes.find((s) => s.name == "main");
 
-        let command = user.scene!.commands.find((c) => c.name.includes(msg.text!) );
+        let command = user.scene!.commands.find((c) => c.name.includes(msg.text!) ) ?? user.scene!.commands.find(elm => elm.name.length == 0);
 
         if (!command) {
             if (msg.chat.type == "private") await Cache.bot.sendMessage(msg.chat.id, "Неизвестная команда", {

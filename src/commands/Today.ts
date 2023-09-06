@@ -6,7 +6,11 @@ import SponsorMessagesMiddleware from "../middlewares/SponsorMessages.js";
 import { commandName } from "../lib/Utils.js";
 
 export default class TodayCommand extends Command {
-    name = [...commandName("Сегодняшнее", "⏺️"), "/today", "/today@kubstu_timetable_bot"];
+    name = commandName({
+        name: { title: "Сегодняшнее", emoji: "⏺️" },
+        command: "today"
+    });
+
     sceneName = ["main"];
     middlewares = [SponsorMessagesMiddleware];
 

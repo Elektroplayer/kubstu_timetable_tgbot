@@ -6,7 +6,11 @@ import Users from "../models/UsersModel.js";
 import { commandName } from "../lib/Utils.js";
 
 export default class TodayCommand extends Command {
-    name = [...commandName("Настройки", "⚙️"), "/settings", "/settings@kubstu_timetable_bot"];
+    // name = [...commandName("Настройки", "⚙️"), "/settings", "/settings@kubstu_timetable_bot"];
+    name = commandName({
+        name: { title: "Настройки", emoji: "⚙️" },
+        command: "settings"
+    })
     sceneName = ["main"];
 
     async exec(user: User, msg: Message): Promise<void> {

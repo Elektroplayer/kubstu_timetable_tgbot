@@ -5,7 +5,8 @@ import Cache from "../lib/Cache.js";
 import { commandName } from "../lib/Utils.js";
 
 export default class TodayCommand extends Command {
-    name = [...commandName("Отмена", "🛑")];
+    //name = commandName("Отмена", "🛑");
+    name = commandName({ name: { title: "Отмена", emoji: "🛑" } });
     sceneName = ["settings"];
 
     async exec(user: User, msg: Message): Promise<void> {
