@@ -5,7 +5,7 @@ import Cache from "../lib/Cache.js";
 import { commandName } from "../lib/Utils.js";
 
 export default class TodayCommand extends Command {
-    name = commandName({ command: "showall" });
+    name = { command: "showall" };
     sceneName = ["main"];
 
     async exec(user: User, msg: Message): Promise<void> {

@@ -105,7 +105,7 @@ export default class Group {
         }
 
         let dayEvents = await Events.find(filter);
-        let out = dayEvents.reduce((acc, elm, i) => acc + `\n\n${i+1}. <b>${elm.name}</b>` + (elm.note ? `\n  ${elm.note}` : ""), "")
+        let out = dayEvents.reduce((acc, elm, i) => acc + `\n\n${i+1}. <b>${elm.name}</b>` + (elm.note ? `\n  ${elm.note.replace("\n", "\n  ")}` : ""), "")
 
         return out ? ("<b>СОБЫТИЯ:</b>" + out) : null;
     }

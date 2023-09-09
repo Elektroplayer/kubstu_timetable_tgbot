@@ -2,6 +2,7 @@ import TelegramBot from "node-telegram-bot-api";
 import Event from "../structures/Event.js";
 import Cache from "../lib/Cache.js";
 import { MiddlewareTypes } from "../structures/Middleware.js"
+import { commandName } from "../lib/Utils.js";
 
 export default class MessageEvent extends Event {
     name = "message" as BotEvents;
@@ -13,7 +14,7 @@ export default class MessageEvent extends Event {
 
         if (!user.scene) user.scene = Cache.scenes.find((s) => s.name == "main");
 
-        let command = user.scene!.commands.find((c) => c.name.includes(msg.text!) ) ?? user.scene!.commands.find(elm => elm.name.length == 0);
+        let command = user.scene!.commands.find((c) => commandName(c.name).includes(msg.text!) ) ?? user.scene!.commands.find(c => commandName(c.name).length == 0);
 
         if (!command) {
             if (msg.chat.type == "private") await Cache.bot.sendMessage(msg.chat.id, "Неизвестная команда", {

@@ -3,7 +3,7 @@ import { Message } from "node-telegram-bot-api";
 import { Middleware } from "./Middleware.js";
 
 export default abstract class Command {
-    abstract name: string[];
+    abstract name: CommandName;
     abstract sceneName: string[];
 
     middlewares:Middleware[] = [];

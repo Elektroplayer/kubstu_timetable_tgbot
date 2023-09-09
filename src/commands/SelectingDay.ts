@@ -4,7 +4,7 @@ import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
 
 export default class SelectingDayCommand extends Command {
-    name = [
+    name = { buttons: [
         "Нечёт Пн",
         "Нечёт Вт",
         "Нечёт Ср",
@@ -17,7 +17,8 @@ export default class SelectingDayCommand extends Command {
         "Чёт Чт",
         "Чёт Пт",
         "Чёт Сб",
-    ];
+    ]};
+
     sceneName = ["main"];
 
     async exec(user: User, msg: Message): Promise<void> {
@@ -32,8 +33,8 @@ export default class SelectingDayCommand extends Command {
         if (msg.chat.type !== "private") return;
 
         let text;
-        let day       = (this.name.indexOf(msg.text!) + 1) % 6 || 6;
-        let week      = this.name.indexOf(msg.text!) >= 6;
+        let day       = (this.name.buttons.indexOf(msg.text!) + 1) % 6 || 6;
+        let week      = this.name.buttons.indexOf(msg.text!) >= 6;
         let schedule  = await user.group.getTextSchedule( day, week );
 
         if(!schedule) text = "<b>Расписание не найдено...</b> <i>или что-то пошло не так...</i>";

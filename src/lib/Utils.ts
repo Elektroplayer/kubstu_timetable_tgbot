@@ -20,23 +20,13 @@ export const daysEven = [
 //     return [name, `${emoji} ${name}`]
 // }
 
-// let opts = {
-//     names: [
-//         {
-//             name: "привет",
-//             emoji: ""
-//         }
-//     ],
-//     command: ""
-// }
-
-export function commandName(opts:{ name?: Array<{ title: string, emoji?: string } | string> | { title: string, emoji?: string } | string, command?: string }) {
+export function commandName(opts: CommandName) {
 //function commandName(opts) {
     let arr = [];
 
-    if(opts.name) {
-        if(Array.isArray(opts.name)) {
-            opts.name.forEach(elm => {
+    if(opts.buttons) {
+        if(Array.isArray(opts.buttons)) {
+            opts.buttons.forEach(elm => {
                 if(typeof elm == "string") arr.push(elm);
                 else {
                     arr.push(elm.title);
@@ -44,10 +34,10 @@ export function commandName(opts:{ name?: Array<{ title: string, emoji?: string 
                 }
             });
         } else {
-            if(typeof opts.name == "string") arr.push(opts.name);
+            if(typeof opts.buttons == "string") arr.push(opts.buttons);
             else {
-                arr.push(opts.name.title);
-                if(opts.name.emoji) arr.push(`${opts.name.emoji} ${opts.name.title}`);
+                arr.push(opts.buttons.title);
+                if(opts.buttons.emoji) arr.push(`${opts.buttons.emoji} ${opts.buttons.title}`);
             }
         }
     }

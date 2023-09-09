@@ -3,13 +3,12 @@ import Command from "../structures/Command.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
 import SponsorMessagesMiddleware from "../middlewares/SponsorMessages.js";
-import { commandName } from "../lib/Utils.js";
 
 export default class TomorrowCommand extends Command {
-    name = commandName({
-        name: { title: "Завтрашнее", emoji: "▶️" },
+    name = {
+        buttons: { title: "Завтрашнее", emoji: "▶️" },
         command: "tomorrow"
-    });
+    };
 
     sceneName = ["main"];
     middlewares = [SponsorMessagesMiddleware];

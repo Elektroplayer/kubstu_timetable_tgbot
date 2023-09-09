@@ -3,11 +3,9 @@ import Command from "../structures/Command.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
 import { anotherDay } from "../lib/Keyboards.js";
-import { commandName } from "../lib/Utils.js";
 
 export default class AnotherDayCommand extends Command {
-    // name = commandName("Выбрать день", "🔀");
-    name = commandName({ name: { title: "Выбрать день", emoji: "🔀" } });
+    name = { buttons: { title: "Выбрать день", emoji: "🔀" } };
     sceneName = ["main"];
 
     async exec(user: User, msg: Message): Promise<void> {
