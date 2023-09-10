@@ -19,6 +19,10 @@ const schema = new mongoose.Schema({
     token: {
         type: String,
         default: undefined
+    },
+    showSettings: {
+        type: Boolean,
+        default: true
     }
 }, { collection: "users" });
 

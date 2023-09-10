@@ -8,8 +8,9 @@ export default class User {
     scene?: Scene;
     group?: Group;
     notifications: boolean = false;
-    emoji:boolean = true;
-    token?:string;
+    emoji: boolean = true;
+    showSettings: boolean = true;
+    token?: string;
 
     /**
      * Используется для временного хранения данных при настройке
@@ -33,6 +34,7 @@ export default class User {
 
             this.notifications = userData?.notifications ?? false;
             this.emoji = userData?.emoji ?? true;
+            this.showSettings = userData?.showSettings ?? true;
             this.token = userData?.token;
         }
     }
@@ -93,7 +95,7 @@ export default class User {
      * Получение главной клавиатуры
      */
     getMainKeyboard():KeyboardButton[][] {
-        return [
+        let arr = [
             [
                 {
                     text: (this.emoji ? "⏺️ " : "") + "Сегодняшнее",
@@ -106,12 +108,12 @@ export default class User {
                 }, {
                     text: (this.emoji ? "🔀 " : "") + "Выбрать день",
                 }
-            ],[
-                {
-                    text: (this.emoji ? "⚙️ " : "") + "Настройки",
-                },
-            ],
-        ]
+            ]
+        ];
+
+        if (this.showSettings) arr.push([{ text: (this.emoji ? "⚙️ " : "") + "Настройки" }])
+
+        return arr;
     }
 
     /**
@@ -126,6 +128,10 @@ export default class User {
             ],[
                 {
                     text: this.emoji ? ( (this.emoji ? "🙅‍♂️ " : "") + "Выключить эмодзи") : "Включить эмодзи" // Тут нет эмодзи, потому что оно тут в любом случае будет отсутствовать
+                }
+            ],[
+                {
+                    text: this.showSettings ? ( (this.emoji ? "⚙️ " : "") + "Убрать настройки") : ((this.emoji ? "⚙️ " : "") + "Показывать настройки")
                 }
             ],[
                 {
