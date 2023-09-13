@@ -31,7 +31,6 @@ export default class GroupQuery extends Query {
         });
     
         let text = await res.text();
-    
         let matches = text.match(/<option.+<\/option>/g);
 
         if(!matches) return;
@@ -59,13 +58,18 @@ export default class GroupQuery extends Query {
         db.kurs = +query.data!.slice(14,query.data!.length);
     
         let text = query.message!.text;
-        let groups = await this.groupsParser(db.inst_id!, db.kurs!);
+        let groups;
+
+        try {
+            groups = await this.groupsParser(db.inst_id!, db.kurs!);
+        } catch(err) {console.log(err)}
+
         let keyboard: KeyboardButton[][] = [];
         let buffer: KeyboardButton[] = [];
 
         if(!groups) {
             Cache.bot.editMessageText(
-                text.split("\n\n").slice(0,text.split("\n\n").length-1).join("\n\n") + "\n\nЧто-то пошло не так! Повторите попытку позже...",
+                text.split("\n\n").slice(0,text.split("\n\n").length-1).join("\n\n") + "\n\nЧто-то пошло не так! Повтори попытку позже... \nЕсли проблема не уходит, обратись в поддержку: @Elektroplayer",
                 {
                     chat_id: query.message.chat.id,
                     message_id: query.message.message_id,
