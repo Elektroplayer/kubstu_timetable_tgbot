@@ -1,10 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
-import Group from "../structures/Group.js";
-import Scene from "../structures/Scene.js";
-import User from "../structures/User.js";
-import { config } from "dotenv";
-
-config(); // Инициализируем переменные среды снова
+import Group from "../structures/Group";
+import Scene from "../structures/Scene";
+import User from "../structures/User";
 
 class Cache {
     bot: TelegramBot = new TelegramBot(process.env.TOKEN, { polling: true });

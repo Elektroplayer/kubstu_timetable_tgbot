@@ -1,6 +1,6 @@
-import Parser from "./Parser.js";
-import Schedules from "../models/GroupsModel.js";
-import Events from "../models/EventsModel.js";
+import Parser from "./Parser";
+import Schedules from "../models/GroupsModel";
+import Events from "../models/EventsModel";
 
 export default class Group {
     kurs: number;

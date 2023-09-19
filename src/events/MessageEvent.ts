@@ -1,8 +1,8 @@
 import TelegramBot from "node-telegram-bot-api";
-import Event from "../structures/Event.js";
-import Cache from "../lib/Cache.js";
-import { MiddlewareTypes } from "../structures/Middleware.js"
-import { commandName } from "../lib/Utils.js";
+import Event from "../structures/Event";
+import Cache from "../lib/Cache";
+import { MiddlewareTypes } from "../structures/Middleware"
+import { commandName } from "../lib/Utils";
 
 export default class MessageEvent extends Event {
     name = "message" as BotEvents;

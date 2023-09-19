@@ -1,6 +1,6 @@
 import TelegramBot from "node-telegram-bot-api";
-import Event from "../structures/Event.js";
-import Cache from "../lib/Cache.js";
+import Event from "../structures/Event";
+import Cache from "../lib/Cache";
 
 export default class QueryEvent extends Event {
     name = "callback_query" as BotEvents;

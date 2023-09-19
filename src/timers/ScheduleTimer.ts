@@ -1,6 +1,6 @@
-import Timer from "../structures/Timer.js";
-import Users from "../models/UsersModel.js";
-import Cache from "../lib/Cache.js";
+import Timer from "../structures/Timer";
+import Users from "../models/UsersModel";
+import Cache from "../lib/Cache";
 import { CronJob } from "cron";
 
 export default class TestTimer extends Timer {

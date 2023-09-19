@@ -1,4 +1,4 @@
-import Event from "../structures/Event.js";
+import Event from "../structures/Event";
 
 export default class PollingErrorsEvent extends Event {
     name = "polling_error" as BotEvents;

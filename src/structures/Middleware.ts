@@ -1,5 +1,5 @@
 import { Message } from "node-telegram-bot-api";
-import User from "./User.js";
+import User from "./User";
 
 export enum MiddlewareTypes {
     Pre,

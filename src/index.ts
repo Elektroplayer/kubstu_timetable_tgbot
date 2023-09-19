@@ -1,8 +1,6 @@
-import { config } from 'dotenv';
 import mongoose from 'mongoose';
-import Main from './structures/Main.js';
+import Main from './structures/Main';
 
-config(); // Инициализируем .env конфиг
 mongoose.set('strictQuery', true);
 mongoose.connect(process.env.MONGO_URI); // Подключаем MongoDB
 

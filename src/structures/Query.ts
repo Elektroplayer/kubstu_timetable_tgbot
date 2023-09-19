@@ -1,5 +1,5 @@
 import { CallbackQuery } from "node-telegram-bot-api";
-import User from "./User.js";
+import User from "./User";
 
 export default abstract class Query {
     abstract name: string[];
