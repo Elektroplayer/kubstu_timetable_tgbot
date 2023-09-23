@@ -25,7 +25,7 @@ export default class NearestCommand extends Command {
         for(let i=0;i<=14;i++) {
             date.setUTCDate(date.getUTCDate() + 1);
 
-            schedule = await user.group.getTextSchedule(date.getDay(), date.getWeek()%2==0);
+            schedule = await user.group.getTextSchedule(date.getDay(), date.getWeek()%2==0, date);
             events = await user.group.getTextEvents(date);
 
             if(schedule.indexOf("Пар нет! Передохни:з") == -1 || events) break;

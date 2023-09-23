@@ -112,14 +112,21 @@ export default class Parser {
             .forEach(element => {
                 if (element.text.startsWith("Преподаватель:"))
                     out.teacher = element.text.slice(15).trim() == "" ? "Не назначен" : element.text.slice(15).trim();
-                if (element.text.startsWith("Аудитория:"))
-                    out.auditory = element.text.slice(11).trim() == "" ? undefined : element.text.slice(11).trim();
-                if (element.text.startsWith("Примечание:"))
-                    out.remark = element.text.slice(12).trim() == "" ? undefined : element.text.slice(12).trim();
-                if (element.text.startsWith("Процент группы:"))
-                    out.percent = element.text.slice(16).trim() == "" ? undefined : element.text.slice(16).trim();
+
+                else if (element.text.startsWith("Аудитория:") && element.text.slice(11).trim() !== "")
+                    out.auditory = element.text.slice(11).trim();
+
+                else if (element.text.startsWith("Примечание:") && element.text.slice(12).trim() !== "")
+                    out.remark = element.text.slice(12).trim();
+
+                if (element.text.startsWith("Процент группы:") && element.text.slice(16).trim() !== "")
+                    out.percent = element.text.slice(16).trim();
+
                 if (element.text.startsWith("В лекционном потоке: Да"))
                     out.flow = true;
+
+                if (element.text.startsWith("Период:") && element.text !== "Период: с 1 по 18 неделю" && element.text.slice(8).trim() !== "")
+                    out.period = element.text.slice(8).trim();
             });
 
         return out;

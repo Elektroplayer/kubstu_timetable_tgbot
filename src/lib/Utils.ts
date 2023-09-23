@@ -16,12 +16,30 @@ export const daysEven = [
     "Чёт Сб",
 ];
 
-// export function commandName(name:string, emoji:string) {
-//     return [name, `${emoji} ${name}`]
-// }
+export function weekNumber(date: Date = new Date()) {
+    let startDate = new Date(date);
+
+    startDate.setUTCHours(0, 0, 0, 0)
+
+    if(date.getMonth() > 5) {
+        // Ставим второе сентября. Первое праздник
+        startDate.setUTCMonth(8, 2);
+
+        // Находим дату понедельника текущей недели
+        startDate.setUTCDate(2-startDate.getUTCDay()+1) 
+
+        // Находим разницу между данной датой и датой первого дня недели в мс.
+        let diff = date.valueOf() - startDate.valueOf();
+        
+        // Переводим в недели, округляем в большую сторону и выводим.
+        return Math.round(diff / (1000*60*60*24*7));
+    } else {
+        // TODO: Доделать во втором семестре.
+        return null;
+    }
+}
 
 export function commandName(opts: CommandName) {
-//function commandName(opts) {
     let arr = [];
 
     if(opts.buttons) {
@@ -50,5 +68,6 @@ export function commandName(opts: CommandName) {
 export default {
     days,
     daysEven,
-    commandName
+    commandName,
+    weekNumber
 };

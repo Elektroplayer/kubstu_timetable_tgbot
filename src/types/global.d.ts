@@ -21,6 +21,7 @@ declare global {
         auditory?: string,
         remark?: string,
         percent?: string,
+        period?: string,
         flow?: boolean
     }
 

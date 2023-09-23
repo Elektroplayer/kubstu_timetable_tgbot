@@ -21,6 +21,7 @@ const schema = new mongoose.Schema({
                     auditory: String,
                     remark: String,
                     percent: String,
+                    period: String,
                     flow: Boolean
                 }]
             }]

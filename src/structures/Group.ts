@@ -1,6 +1,7 @@
 import Parser from "./Parser";
 import Schedules from "../models/GroupsModel";
 import Events from "../models/EventsModel";
+import { weekNumber } from "../lib/Utils";
 
 export default class Group {
     kurs: number;
@@ -32,19 +33,31 @@ export default class Group {
         return daySchedule;
     }
 
-    async getTextSchedule(day = new Date().getDay(), week = new Date().getWeek()%2==0) {
+    async getTextSchedule(day = new Date().getDay(), week = new Date().getWeek()%2==0, date?: Date) {
         let out = "";
+        let para = "";
         let daySchedule = await this.getRawSchedule(day, week);
+        let weekNum = date ? weekNumber(date) : null;
 
         if(daySchedule == null) return "<b>Произошла ошибка<b>\nСкорее всего сайт с расписанием не работает...";
 
         daySchedule.forEach(elm => {
-            out += `\n\n${elm.number} пара: ${elm.name} [${elm.paraType}]\n  Время: ${elm.time}`;
-            if(elm.teacher) out += `\n  Преподаватель: ${elm.teacher}`;
-            if(elm.auditory) out += `\n  Аудитория: ${elm.auditory}`;
-            if(elm.percent) out += `\n  Процент группы: ${elm.percent}`;
-            if(elm.flow) out += "\n  В лекционном потоке";
-            if(elm.remark) out += `\n  Примечание: ${elm.remark}`;
+            para += `\n\n${elm.number} пара: ${elm.name} [${elm.paraType}]\n  Время: ${elm.time}`;
+            if(elm.teacher) para += `\n  Преподаватель: ${elm.teacher}`;
+            if(elm.auditory) para += `\n  Аудитория: ${elm.auditory}`;
+            if(elm.percent) para += `\n  Процент группы: ${elm.percent}`;
+            if(elm.flow) para += "\n  В лекционном потоке";
+            if(elm.period) para += `\n  Период: ${elm.period}`;
+            if(elm.remark) para += `\n  Примечание: ${elm.remark}`;
+
+            if(elm.period && weekNum) {
+                let period = [+elm.period.split(" ")[1], +elm.period.split(" ")[3]]
+
+                if(period[0] > weekNum || period[1] < weekNum) para = `<i>${para}</i>`;
+            }
+
+            out += para;
+            para = "";
         });
 
         return `<b>${this.parser.days[day]} / ${week ? "Чётная" : "Нечётная"} неделя</b>` + (!out ? "\nПар нет! Передохни:з" : out);

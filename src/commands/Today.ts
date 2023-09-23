@@ -20,7 +20,7 @@ export default class TodayCommand extends Command {
         }
 
         let text;
-        let schedule = await user.group.getTextSchedule();
+        let schedule = await user.group.getTextSchedule(undefined, undefined, new Date());
         let events = await user.group.getTextEvents();
 
         if(!schedule) text = "<b>Расписание не найдено...</b> <i>или что-то пошло не так...</i>";

@@ -23,7 +23,7 @@ export default class TomorrowCommand extends Command {
         date.setUTCDate(date.getUTCDate() + 1);
 
         let text;
-        let schedule = await user.group.getTextSchedule(date.getDay(), date.getWeek()%2==0);
+        let schedule = await user.group.getTextSchedule(date.getDay(), date.getWeek()%2==0, date);
         let events = await user.group.getTextEvents(date);
 
         if(!schedule) text = "<b>Расписание не найдено...</b> <i>или что-то пошло не так...</i>";

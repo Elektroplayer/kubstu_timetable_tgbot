@@ -35,7 +35,7 @@ export default class SelectingDayCommand extends Command {
         let text;
         let day       = (this.name.buttons.indexOf(msg.text!) + 1) % 6 || 6;
         let week      = this.name.buttons.indexOf(msg.text!) >= 6;
-        let schedule  = await user.group.getTextSchedule( day, week );
+        let schedule  = await user.group.getTextSchedule(day, week);
 
         if(!schedule) text = "<b>Расписание не найдено...</b> <i>или что-то пошло не так...</i>";
         else text = schedule;
