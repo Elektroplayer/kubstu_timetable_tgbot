@@ -1,5 +1,4 @@
 import { Message } from "node-telegram-bot-api";
-import { instKeyboard } from "../lib/Keyboards";
 import Command from "../structures/Command";
 import User from "../structures/User";
 import Cache from "../lib/Cache";
@@ -22,11 +21,7 @@ export default class TodayCommand extends Command {
             `С: 2202 2050 2291 3625`,
             {
                 disable_web_page_preview: true,
-                parse_mode: "HTML",
-                reply_markup: {
-                    inline_keyboard: instKeyboard,
-                    resize_keyboard: true,
-                }
+                parse_mode: "HTML"
             }
         );
     }
