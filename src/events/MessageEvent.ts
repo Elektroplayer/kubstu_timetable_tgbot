@@ -24,6 +24,11 @@ export default class MessageEvent extends Event {
                 }
             });
         } else {
+
+            // Отправка сообщения в консоль происходит уже после проверки на существование команды (19 строка)
+            // Если сообщение не является командой, я не увижу ваше сообщение
+            // В добавок в группе можно отключить доступ к сообщениям у бота, команды будут работать
+
             console.log( `${msg.from?.username ?? msg.from?.first_name ?? "Нет ника (?)"}, ${msg.from.id}: ${user.group?.name ?? "Не выбрана"}; ${msg.text};` );
 
             await command.middlewares.filter(mw => mw.type == MiddlewareTypes.Pre).forEach(async mw => {
