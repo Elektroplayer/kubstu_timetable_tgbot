@@ -52,10 +52,16 @@ export default class TestTimer extends Timer {
                 text,
                 { parse_mode: "HTML" }
             ).catch(err => {
-                if(`${err}` == "Error: ETELEGRAM: 403 Forbidden: bot was blocked by the user" || `${err}` == "Error: ETELEGRAM: 400 Bad Request: chat not found") {
-                    console.log(` Chat not found or bot was blocked by ${user.id}`);
+                if([ // 50 оттенков "Не могу отправить сообщение"
+                    "Error: ETELEGRAM: 403 Forbidden: bot was blocked by the user",
+                    "Error: ETELEGRAM: 400 Bad Request: chat not found",
+                    "Error: ETELEGRAM: 403 Forbidden: user is deactivated"
+                ].includes(`${err}`)) {
+
+                    console.log(` Chat not found or was deleted, or bot was blocked by ${user.id}`);
                     console.log(`${err}`);
                     Users.findOneAndRemove({userId: user.id});
+
                 } else {
                     console.log(`"${err}"`);
                     console.log(err);
