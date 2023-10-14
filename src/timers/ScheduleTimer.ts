@@ -3,7 +3,7 @@ import Users from "../models/UsersModel";
 import Cache from "../lib/Cache";
 import { CronJob } from "cron";
 
-export default class TestTimer extends Timer {
+export default class NotificationsTimer extends Timer {
     time = 0;
 
     async init() {
