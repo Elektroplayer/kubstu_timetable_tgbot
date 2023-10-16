@@ -3,3 +3,5 @@
 /.vscode
 .prettierrc
 bun.lockb
+/dist
+package-lock.json

@@ -1,7 +1,7 @@
 import { Message } from "node-telegram-bot-api";
-import { Middleware, MiddlewareTypes } from "../structures/Middleware";
-import User from "../structures/User";
-import Cache from "../lib/Cache";
+import { Middleware, MiddlewareTypes } from "../structures/Middleware.js";
+import User from "../structures/User.js";
+import Cache from "../lib/Cache.js";
 
 class SponsorMessagesMiddleware extends Middleware {
     type = MiddlewareTypes.Post;

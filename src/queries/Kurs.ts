@@ -1,8 +1,8 @@
 import { CallbackQuery } from "node-telegram-bot-api";
-import { kursKeyboard } from "../lib/Keyboards";
-import Query from "../structures/Query";
-import User from "../structures/User";
-import Cache from "../lib/Cache";
+import { kursKeyboard } from "../lib/Keyboards.js";
+import Query from "../structures/Query.js";
+import User from "../structures/User.js";
+import Cache from "../lib/Cache.js";
 
 export default class KursQuery extends Query {
     name = ["settings_inst"];

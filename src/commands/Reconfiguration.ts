@@ -1,8 +1,8 @@
 import { Message } from "node-telegram-bot-api";
-import Command from "../structures/Command";
-import User from "../structures/User";
-import Cache from "../lib/Cache";
-import { instKeyboard } from "../lib/Keyboards";
+import Command from "../structures/Command.js";
+import User from "../structures/User.js";
+import Cache from "../lib/Cache.js";
+import { instKeyboard } from "../lib/Keyboards.js";
 
 export default class TodayCommand extends Command {
     name = { buttons: { title: "Перенастроить бота", emoji: "⚙️" } }

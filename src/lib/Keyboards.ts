@@ -1,5 +1,5 @@
 import { KeyboardButton } from "node-telegram-bot-api";
-import { days, daysEven } from "./Utils";
+import { days, daysEven } from "./Utils.js";
 
 export let instKeyboard = [
     [

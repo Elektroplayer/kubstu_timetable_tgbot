@@ -1,6 +1,6 @@
 import { readdirSync } from "fs";
-import Command from "./Command";
-import Query from "./Query";
+import Command from "./Command.js";
+import Query from "./Query.js";
 
 export default class Scene {
     commands: Command[] = [];
@@ -12,7 +12,7 @@ export default class Scene {
     }
 
     async importQueries() {
-        for (let dirent of readdirSync("./src/queries/", {withFileTypes: true})) {
+        for (let dirent of readdirSync("./dist/queries/", {withFileTypes: true})) {
             if (!dirent.name.endsWith("")) continue;
         
             let queryClass = (await import("../queries/" + dirent.name)).default;
@@ -23,7 +23,7 @@ export default class Scene {
     }
 
     async importCommands() {
-        for (let dirent of readdirSync("./src/commands/", {withFileTypes: true})) {
+        for (let dirent of readdirSync("./dist/commands/", {withFileTypes: true})) {
             if (!dirent.name.endsWith("")) continue;
         
             let commandClass = (await import("../commands/" + dirent.name)).default;

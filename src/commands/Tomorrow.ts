@@ -1,8 +1,8 @@
 import { Message } from "node-telegram-bot-api";
-import Command from "../structures/Command";
-import User from "../structures/User";
-import Cache from "../lib/Cache";
-import SponsorMessagesMiddleware from "../middlewares/SponsorMessages";
+import Command from "../structures/Command.js";
+import User from "../structures/User.js";
+import Cache from "../lib/Cache.js";
+import SponsorMessagesMiddleware from "../middlewares/SponsorMessages.js";
 
 export default class TomorrowCommand extends Command {
     name = {

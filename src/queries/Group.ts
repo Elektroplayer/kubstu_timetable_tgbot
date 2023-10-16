@@ -1,9 +1,9 @@
 import { CallbackQuery } from "node-telegram-bot-api";
-import Query from "../structures/Query";
-import User from "../structures/User";
+import Query from "../structures/Query.js";
+import User from "../structures/User.js";
 import https from "https";
 import fetch from "node-fetch";
-import Cache from "../lib/Cache";
+import Cache from "../lib/Cache.js";
 
 interface KeyboardButton {
     text: string,

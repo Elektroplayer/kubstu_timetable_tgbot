@@ -1,6 +1,6 @@
-import User from "./User";
+import User from "./User.js";
 import { Message } from "node-telegram-bot-api";
-import { Middleware } from "./Middleware";
+import { Middleware } from "./Middleware.js";
 
 export default abstract class Command {
     abstract name: CommandName;

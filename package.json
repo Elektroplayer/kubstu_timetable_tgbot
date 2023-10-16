@@ -1,9 +1,10 @@
 {
   "name": "kubstu_timetable_tgbot",
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
   "type": "module",
   "dependencies": {
     "cron": "^2.4.3",
+    "dotenv": "^16.3.1",
     "fs": "^0.0.1-security",
     "https": "^1.0.0",
     "mongoose": "^7.5.2",

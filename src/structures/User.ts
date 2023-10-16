@@ -1,7 +1,7 @@
-import Scene from "./Scene";
-import Group from "./Group";
-import Users from "../models/UsersModel";
-import Cache from "../lib/Cache";
+import Scene from "./Scene.js";
+import Group from "./Group.js";
+import Users from "../models/UsersModel.js";
+import Cache from "../lib/Cache.js";
 import { KeyboardButton } from "node-telegram-bot-api";
 
 export default class User {

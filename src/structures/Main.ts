@@ -1,8 +1,8 @@
 import { readdirSync } from "fs";
-import Event from "./Event";
-import Scene from "./Scene";
-import Cache from "../lib/Cache";
-import Timer from "./Timer";
+import Event from "./Event.js";
+import Scene from "./Scene.js";
+import Cache from "../lib/Cache.js";
+import Timer from "./Timer.js";
 
 export default class Main {
     scenesNames = ["main", "settings"];
@@ -14,8 +14,8 @@ export default class Main {
     }
 
     async initEvents() {
-        for (let dirent of readdirSync("./src/events", {withFileTypes: true})) {
-            if (!dirent.name.endsWith(".ts")) continue;
+        for (let dirent of readdirSync("./dist/events", {withFileTypes: true})) {
+            if (!dirent.name.endsWith(".js")) continue;
 
             console.log(`+ Евент ${dirent.name}`);
         
@@ -35,7 +35,7 @@ export default class Main {
     }
 
     async initTimers() {
-        for (let dirent of readdirSync("./src/timers", {withFileTypes: true})) {
+        for (let dirent of readdirSync("./dist/timers", {withFileTypes: true})) {
             if (!dirent.name.endsWith("")) continue;
 
             console.log(`+ Таймер ${dirent.name}`);

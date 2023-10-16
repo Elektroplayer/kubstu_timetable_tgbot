@@ -1,5 +1,5 @@
-import Timer from "../structures/Timer";
-import Cache from "../lib/Cache";
+import Timer from "../structures/Timer.js";
+import Cache from "../lib/Cache.js";
 import { CronJob } from "cron";
 
 export default class CleanerTimer extends Timer {
