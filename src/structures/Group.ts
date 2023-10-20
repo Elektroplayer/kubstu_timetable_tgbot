@@ -76,16 +76,32 @@ export default class Group {
     async getTextFullSchedule(week:boolean) {
         let out = "";
         let schedule = await this.getRawFullSchedule();
-
-        if(schedule == null || schedule == undefined) return "<b>Произошла ошибка<b>\nСкорее всего сайт с расписанием не работает...";
+        let F = (date:Date) => `${date.getUTCDate()}.${date.getUTCMonth()}.${date.getUTCFullYear()}`;
         
+        let dict:{[index: string]: string} = {
+            "Лабораторная": "Лаб",
+            "Практика": "Прак",
+            "Лекция": "Лек"
+        }
+        
+        if(schedule == null || schedule == undefined) return null; // "<b>Произошла ошибка<b>\nСкорее всего сайт с расписанием не работает...";
+        
+        let date = new Date();
+
+        date.setUTCHours(0, 0, 0, 0);
+        date.setUTCDate(date.getUTCDate() - date.getUTCDay() + 1); // Находим понедельник
+
+        if(date.getWeek()%2==0 != week) date.setUTCDate(date.getUTCDate()+7);
+
         out += `<u><b>${week ? "ЧЁТНАЯ" : "НЕЧЁТНАЯ"} НЕДЕЛЯ:</b></u>\n`;
         schedule.days.filter(elm => elm.even == week).forEach(day => {
-            out += `\n<b>${this.parser.days[day.daynum]}:</b>\n`;
+            out += `\n<b>${this.parser.days[day.daynum]} | ${F(date)}</b>\n`;
             
             day.daySchedule.forEach(lesson => {
-                out += `  ${lesson.number}. ${lesson.name} [${lesson.paraType}] (${lesson.auditory})\n`
+                out += `  ${lesson.number}. ${lesson.name} [${dict[lesson.paraType] ?? lesson.paraType}] (${lesson.auditory})\n`
             });
+
+            date.setUTCDate(date.getUTCDate()+1)
         });
 
         return out;

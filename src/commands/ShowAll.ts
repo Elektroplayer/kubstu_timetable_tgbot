@@ -13,10 +13,12 @@ export default class TodayCommand extends Command {
             return;
         }
 
-        let evenSchedule = await user.group.getTextFullSchedule(true);
-        let oddSchedule = await user.group.getTextFullSchedule(false);
+        let date = new Date();
 
-        if(!evenSchedule || !oddSchedule) {
+        let schedule1 = await user.group.getTextFullSchedule(date.getWeek()%2==0);
+        let schedule2 = await user.group.getTextFullSchedule(date.getWeek()%2==1);
+
+        if(!schedule1 || !schedule2) {
             Cache.bot.sendMessage(
                 msg.chat.id,
                 "<b>Расписание не найдено...</b> <i>или что-то пошло не так...</i>",
@@ -32,7 +34,7 @@ export default class TodayCommand extends Command {
         } else {
             await Cache.bot.sendMessage(
                 msg.chat.id,
-                evenSchedule,
+                schedule1,
                 {
                     parse_mode: "HTML",
                     reply_markup: {
@@ -43,7 +45,7 @@ export default class TodayCommand extends Command {
 
             await Cache.bot.sendMessage(
                 msg.chat.id,
-                oddSchedule,
+                schedule2,
                 {
                     parse_mode: "HTML",
                     reply_markup: {
