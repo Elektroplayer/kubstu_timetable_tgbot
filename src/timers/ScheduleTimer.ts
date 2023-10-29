@@ -60,7 +60,7 @@ export default class NotificationsTimer extends Timer {
 
                     console.log(` Chat not found or was deleted, or bot was blocked by ${user.id}`);
                     console.log(`${err}`);
-                    Users.findOneAndRemove({userId: user.id});
+                    user.delete();
 
                 } else {
                     console.log(`"${err}"`);

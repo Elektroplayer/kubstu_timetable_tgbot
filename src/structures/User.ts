@@ -91,6 +91,11 @@ export default class User {
         }
     }
 
+    async delete() {
+        return Users.findOneAndRemove({userId: this.id});
+        // TODO: Сделать удаление из массива Cache.users
+    }
+
     /**
      * Получение главной клавиатуры
      */
