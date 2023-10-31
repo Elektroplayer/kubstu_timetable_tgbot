@@ -93,7 +93,9 @@ export default class Group {
 
         if(date.getWeek()%2==0 != week) date.setUTCDate(date.getUTCDate()+7);
 
-        out += `<u><b>${week ? "ЧЁТНАЯ" : "НЕЧЁТНАЯ"} НЕДЕЛЯ:</b></u>\n`;
+        let num = weekNumber(date);
+
+        out += `<u><b>${week ? "ЧЁТНАЯ" : "НЕЧЁТНАЯ"} НЕДЕЛЯ | №${num}:</b></u>\n`;
         schedule.days.filter(elm => elm.even == week).forEach(day => {
             out += `\n<b>${this.parser.days[day.daynum]} | ${F(date)}</b>\n`;
             
