@@ -32,7 +32,7 @@ export function weekNumber(date: Date = new Date()) {
         let diff = date.valueOf() - startDate.valueOf();
         
         // Переводим в недели, округляем в большую сторону и выводим.
-        return Math.round(diff / (1000*60*60*24*7));
+        return Math.round(diff / (1000*60*60*24*7)) + 1;
     } else {
         // TODO: Доделать во втором семестре.
         return null;
