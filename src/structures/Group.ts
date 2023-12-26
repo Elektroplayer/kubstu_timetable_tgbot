@@ -1,5 +1,6 @@
 import Parser from "./Parser.js";
-import Schedules from "../models/GroupsModel.js";
+import Schedules from "../models/ScheduleModel.js";
+import Groups from "../models/GroupsModel.js";
 import Events from "../models/EventsModel.js";
 import { weekNumber } from "../lib/Utils.js";
 
@@ -171,23 +172,23 @@ export default class Group {
      * Если сайт не работает и в БД записей нет, выдаёт null.
      */
     async updateSchedule() {
-        let dbResponse = await Schedules.findOne({group: this.name}).exec()
+        let dbResponse = await Schedules.findOne({group: this.name, inst_id: this.instId}).exec()
 
         if(dbResponse) {
-            if(new Date().valueOf() - dbResponse.timetable.updateDate?.valueOf()! < 1000 * 60 * 60 * 24)
-                return this.setSchedule(dbResponse.timetable.days as Day[], dbResponse.timetable.updateDate)
+            if(new Date().valueOf() - dbResponse.updateDate?.valueOf()! < 1000 * 60 * 60 * 24)
+                return this.setSchedule(dbResponse.days as Day[], dbResponse.updateDate)
             else {
                 try {
                     let days = await this.parser.parseSchedule();
 
-                    dbResponse.timetable.days = days;
-                    dbResponse.timetable.updateDate = new Date();
+                    dbResponse.days = days;
+                    dbResponse.updateDate = new Date();
 
                     dbResponse.save().catch(console.log);
 
                     return this.setSchedule(days);
                 } catch (error) {
-                    return this.setSchedule(dbResponse.timetable.days as Day[], dbResponse.timetable.updateDate!)
+                    return this.setSchedule(dbResponse.days as Day[], dbResponse.updateDate!)
                 }
             }
         } else {
@@ -196,11 +197,12 @@ export default class Group {
 
                 new Schedules({
                     group: this.name,
-                    timetable: {
-                        days,
-                        updateDate: new Date()
-                    },
-                    token: this.genToken()
+                    inst_id: this.instId,
+                    // timetable: {
+                    days,
+                    updateDate: new Date()
+                    // },
+                    // token: this.genToken()
                 }).save().catch(console.log);
 
                 return this.setSchedule(days);
@@ -217,18 +219,19 @@ export default class Group {
             let dbResponse = await Schedules.findOne({group: this.name}).exec()
 
             if(dbResponse) {
-                dbResponse.timetable.days = days;
-                dbResponse.timetable.updateDate = new Date();
+                dbResponse.days = days;
+                dbResponse.updateDate = new Date();
 
                 dbResponse.save().catch(console.log)
             } else {
                 new Schedules({
                     group: this.name,
-                    timetable: {
-                        days,
-                        updateDate: new Date()
-                    },
-                    token: this.genToken()
+                    inst_id: this.instId,
+                    // timetable: {
+                    days,
+                    updateDate: new Date()
+                    // },
+                    // token: this.genToken()
                 }).save().catch(console.log);
             }
 
@@ -239,6 +242,17 @@ export default class Group {
     }
 
     async initToken() {
-        this.token = (await Schedules.findOne({group: this.name}).exec())?.token;
+        let groupInfo = await Groups.findOne({group: this.name, inst_id: this.instId}).exec()
+
+        if(groupInfo) this.token = groupInfo?.token;
+        else {
+            this.token = this.genToken()
+
+            new Groups({
+                group: this.name,
+                inst_id: this.instId,
+                token: this.token
+            }).save().catch(console.log);
+        }
     }
 }

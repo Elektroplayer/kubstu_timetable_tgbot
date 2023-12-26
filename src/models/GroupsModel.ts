@@ -4,29 +4,10 @@ const schema = new mongoose.Schema({
     group: {
         type: String,
         required: true,
-        unique: true
     },
-    timetable: {
-        type: {
-            updateDate: Date,
-            days: [{
-                daynum: Number,
-                even: Boolean,
-                daySchedule: [{
-                    number: Number,
-                    time: String,
-                    name: String,
-                    paraType: String,
-                    teacher: String,
-                    auditory: String,
-                    remark: String,
-                    percent: String,
-                    period: String,
-                    flow: Boolean
-                }]
-            }]
-        },
-        required: true
+    inst_id: {
+        type: Number,
+        required: true,
     },
     token: {
         type: String,
