@@ -7,7 +7,7 @@ export default class NotificationsTimer extends Timer {
     time = 0;
 
     async init() {
-        new CronJob('0 40 9 * * 0-5', this.exec, null, true, 'Europe/Moscow', { time: 9 }); // После первой пары
+        new CronJob('0 40 9 * * 0-5', this.exec, null, true, 'Europe/Moscow', { time: 9 });   // После первой пары
         new CronJob('0 20 11 * * 0-5', this.exec, null, true, 'Europe/Moscow', { time: 11 }); // второй
         new CronJob('0 20 13 * * 0-5', this.exec, null, true, 'Europe/Moscow', { time: 12 }); // третьей
         new CronJob('0 00 15 * * 0-5', this.exec, null, true, 'Europe/Moscow', { time: 14 }); // четвёртой
