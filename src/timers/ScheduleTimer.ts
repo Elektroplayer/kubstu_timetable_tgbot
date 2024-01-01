@@ -23,7 +23,7 @@ export default class NotificationsTimer extends Timer {
         let dateTomorrow = new Date();
         dateTomorrow.setUTCDate(dateTomorrow.getUTCDate() + 1);
 
-        console.log('--------- Начинаю отправлять уведомления ---------');
+        console.log('[notify] Начинаю отправлять уведомления ');
 
         usersID.forEach(async (elm) => {
             let user = await Cache.getUser(+elm.userId!); // Ищем юзера
@@ -40,7 +40,7 @@ export default class NotificationsTimer extends Timer {
                 if (this.time != 9) return // ...расписания на сегодня нет, а время уже не 9
             } else if (this.time != +todayScheduleArray[todayScheduleArray.length - 1].time.split(":")[1].split(" - ")[1]) return; // ...ещё не время (отправляем только, после пар)
 
-            console.log(` ${user.id}, ${user.group?.name}`)
+            console.log(`[notify] ${user.id}, ${user.group?.name}`)
 
             text = await user.group.getTextSchedule(dateTomorrow.getDay(), dateTomorrow.getWeek() % 2 == 0);
 
@@ -58,12 +58,12 @@ export default class NotificationsTimer extends Timer {
                     "Error: ETELEGRAM: 403 Forbidden: user is deactivated"
                 ].includes(`${err}`)) {
 
-                    console.log(` Chat not found or was deleted, or bot was blocked by ${user.id}`);
-                    console.log(`${err}`);
+                    console.log(`[notify] Chat not found or was deleted, or bot was blocked by ${user.id}`);
+                    console.log(`[notify] ${err}`);
                     user.delete();
 
                 } else {
-                    console.log(`"${err}"`);
+                    console.log(`[notify] "${err}"`);
                     console.log(err);
                 }
             });

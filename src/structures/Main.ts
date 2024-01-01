@@ -17,7 +17,7 @@ export default class Main {
         for (let dirent of readdirSync("./dist/events", {withFileTypes: true})) {
             if (!dirent.name.endsWith(".js")) continue;
 
-            console.log(`+ Евент ${dirent.name}`);
+            console.log(`[loader] [+] Евент ${dirent.name}`);
         
             let eventClass = (await import("../events/" + dirent.name)).default;
             let event:Event = new eventClass();
@@ -28,7 +28,7 @@ export default class Main {
 
     async initScenes() {
         this.scenesNames.forEach(sceneName => {
-            console.log(`+ Сцена ${sceneName}`);
+            console.log(`[loader] [+] Сцена ${sceneName}`);
 
             Cache.scenes.push(new Scene(sceneName));
         })
@@ -38,7 +38,7 @@ export default class Main {
         for (let dirent of readdirSync("./dist/timers", {withFileTypes: true})) {
             if (!dirent.name.endsWith("")) continue;
 
-            console.log(`+ Таймер ${dirent.name}`);
+            console.log(`[loader] [+] Таймер ${dirent.name}`);
         
             let timerClass = (await import("../timers/" + dirent.name)).default;
             let timer:Timer = new timerClass();
