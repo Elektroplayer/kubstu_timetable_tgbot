@@ -31,7 +31,7 @@ export default class NotificationsTimer extends Timer {
             if (!user.group) return; // Если нету группы - забиваем
 
             let text;
-            let todayScheduleArray = await user.group.getRawSchedule(dateToday.getDay(), dateToday.getWeek() % 2 == 0); // Смотрим сегодняшнее расписание
+            let todayScheduleArray = await user.group.getDayRawSchedule(dateToday.getDay(), dateToday.getWeek() % 2 == 0); // Смотрим сегодняшнее расписание
 
             // Забиваем если
             if (todayScheduleArray == null) return; // ...расписания нет вообще.

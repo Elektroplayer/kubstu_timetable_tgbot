@@ -13,10 +13,12 @@ export default class TodayCommand extends Command {
             return;
         }
 
-        if(user.group.schedule && new Date().valueOf() - user.group.schedule?.updateDate.valueOf() < 1000 * 60 * 60) {
+        let schedule = await user.group.getFullRawSchedule()
+
+        if(schedule && new Date().valueOf() - schedule.updateDate.valueOf() < 1000 * 60 * 60) {
             Cache.bot.sendMessage(
                 msg.chat.id,
-                "<b>Не так быстро!</b> Прошло меньше часа с момента последнего обновления!",
+                "<b>Не так быстро!</b> Расписание уже было обновлено менее часа назад!",
                 {
                     parse_mode: "HTML",
                     reply_markup: {

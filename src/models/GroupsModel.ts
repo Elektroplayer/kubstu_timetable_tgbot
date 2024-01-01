@@ -11,7 +11,7 @@ const schema = new mongoose.Schema({
     },
     token: {
         type: String,
-        default: undefined
+        required: true
     }
 }, { collection: "groups", versionKey: false });
 

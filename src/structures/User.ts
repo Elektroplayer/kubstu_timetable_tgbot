@@ -69,8 +69,7 @@ export default class User {
 
         if(!this.group) {
             let newGroup = new Group(group, +inst_id);
-            await newGroup.init();
-
+            
             Cache.groups.push(newGroup);
 
             this.group = newGroup;

@@ -2,13 +2,11 @@ import Parser from "./Parser.js";
 import Schedules from "../models/ScheduleModel.js";
 import Groups from "../models/GroupsModel.js";
 import Events from "../models/EventsModel.js";
-import { weekNumber } from "../lib/Utils.js";
+import { weekNumber, genToken } from "../lib/Utils.js";
 
 export default class Group {
     kurs: number;
     parser: Parser;
-    schedule?: Schedule;
-    token?: string;
 
     constructor(public name: string, public instId: number) {
         let year = +(name[0]+name[1])
@@ -19,25 +17,48 @@ export default class Group {
         this.parser  = new Parser(instId, this.kurs, name);
     }
 
-    async init() {
-        await this.initToken()
-    }
+    /**
+     * Ищет расписание.
+     * Если оно есть в БД и оно не устарело, устанавливает его.
+     * Если оно есть в БД, но оно устарело, парсит информацию с сайта и обновляет расписание в БД (при этом если сайт не работает, даёт что есть ничего не обновляя).
+     * Если записи в БД нет, парсит расписание и создаёт запись в БД.
+     * Если сайт не работает и в БД записей нет, выдаёт null.
+     */
+    async getFullRawSchedule() {
+        let F = (days: Day[], updateDate = new Date()) => {return {updateDate, days}}
+        let dbResponse = await Schedules.findOne({group: this.name, inst_id: this.instId}).exec()
 
-    async getRawSchedule(day = new Date().getDay(), week = new Date().getWeek()%2==0) {
-        if(!this.schedule || new Date().valueOf() - this.schedule.updateDate?.valueOf()! > 1000 * 60 * 60 * 24) {
-            let r = await this.updateSchedule();
-            if(r == null) return null;
+        if( dbResponse && new Date().valueOf() - dbResponse.updateDate?.valueOf()! < 1000 * 60 * 60 * 24 * 7)
+            return F(dbResponse.days as Day[], dbResponse.updateDate);
+
+        try {
+            let days = await this.parser.parseSchedule();
+
+            Schedules.findOneAndUpdate({ group: this.name, inst_id: this.instId }, {
+                days,
+                updateDate: new Date()
+            }, { upsert: true });
+
+            return F(days);
+        } catch (err) {
+            if(dbResponse) return F(dbResponse.days as Day[], dbResponse.updateDate!)
+            return null;
         }
-
-        let daySchedule = this.schedule!.days.find(elm => elm.daynum == day && elm.even == week)?.daySchedule ?? [];
-
-        return daySchedule;
     }
+
+    async getDayRawSchedule(day = new Date().getDay(), week = new Date().getWeek()%2==0) {
+        let schedule = await this.getFullRawSchedule();
+        
+        if(!schedule) return null;
+
+        return schedule.days.find(elm => elm.daynum == day && elm.even == week)?.daySchedule ?? [];
+    }
+
 
     async getTextSchedule(day = new Date().getDay(), week = new Date().getWeek()%2==0, date?: Date) {
         let out = "";
         let para = "";
-        let daySchedule = await this.getRawSchedule(day, week);
+        let daySchedule = await this.getDayRawSchedule(day, week);
         let weekNum = date ? weekNumber(date) : null;
 
         if(daySchedule == null) return "<b>Произошла ошибка<b>\nСкорее всего сайт с расписанием не работает...";
@@ -64,19 +85,9 @@ export default class Group {
         return `<b>${this.parser.days[day]} / ${week ? "Чётная" : "Нечётная"} неделя</b>` + (!out ? "\nПар нет! Передохни:з" : out);
     }
 
-    
-    async getRawFullSchedule() {
-        if(!this.schedule || new Date().valueOf() - this.schedule.updateDate?.valueOf()! > 1000 * 60 * 60 * 24) {
-            let r = await this.updateSchedule();
-            if(r == null) return null;
-        }
-
-        return this.schedule
-    }
-
     async getTextFullSchedule(week:boolean) {
         let out = "";
-        let schedule = await this.getRawFullSchedule();
+        let schedule = await this.getFullRawSchedule();
         let F = (date:Date) => `${date.getUTCDate()}.${date.getUTCMonth()}.${date.getUTCFullYear()}`;
         
         let dict:{[index: string]: string} = {
@@ -142,117 +153,39 @@ export default class Group {
         return out ? ("<b>СОБЫТИЯ:</b>" + out) : null;
     }
 
-    /**
-     * Устанавливает новое расписание
-     */
-    setSchedule(days: Day[], updateDate = new Date()) {
-        this.schedule = { updateDate, days };
-
-        return this.schedule;
-    }
-
-    /**
-     * Генерирует 32-символьный токен
-     */
-    genToken() {
-        let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
-        let token = "";
-        for (var i=0; i<32; i++) {
-            let j = Math.floor(Math.random() * (chars.length-1));
-            token += chars[j];
-        }
-        return `${this.name}:${token}`
-    }
-
-    /**
-     * Ищет расписание.
-     * Если оно есть в БД и оно не устарело, устанавливает его.
-     * Если оно есть в БД, но оно устарело, парсит информацию с сайта и обновляет расписание в БД (при этом если сайт не работает, даёт что есть ничего не обновляя).
-     * Если записи в БД нет, парсит расписание и создаёт запись в БД.
-     * Если сайт не работает и в БД записей нет, выдаёт null.
-     */
-    async updateSchedule() {
-        let dbResponse = await Schedules.findOne({group: this.name, inst_id: this.instId}).exec()
-
-        if(dbResponse) {
-            if(new Date().valueOf() - dbResponse.updateDate?.valueOf()! < 1000 * 60 * 60 * 24)
-                return this.setSchedule(dbResponse.days as Day[], dbResponse.updateDate)
-            else {
-                try {
-                    let days = await this.parser.parseSchedule();
-
-                    dbResponse.days = days;
-                    dbResponse.updateDate = new Date();
-
-                    dbResponse.save().catch(console.log);
-
-                    return this.setSchedule(days);
-                } catch (error) {
-                    return this.setSchedule(dbResponse.days as Day[], dbResponse.updateDate!)
-                }
-            }
-        } else {
-            try {
-                let days = await this.parser.parseSchedule()
-
-                new Schedules({
-                    group: this.name,
-                    inst_id: this.instId,
-                    // timetable: {
-                    days,
-                    updateDate: new Date()
-                    // },
-                    // token: this.genToken()
-                }).save().catch(console.log);
-
-                return this.setSchedule(days);
-            } catch (error) {
-                return null
-            }
-        }
-    }
 
     async updateScheduleFromSite() {
+        let F = (days: Day[], updateDate = new Date()) => {return {updateDate, days}}
+
         try {
             let days = await this.parser.parseSchedule()
 
-            let dbResponse = await Schedules.findOne({group: this.name}).exec()
+            await Schedules.findOneAndUpdate({ group: this.name, inst_id: this.instId }, {
+                days,
+                updateDate: new Date()
+            }, { upsert: true });
 
-            if(dbResponse) {
-                dbResponse.days = days;
-                dbResponse.updateDate = new Date();
-
-                dbResponse.save().catch(console.log)
-            } else {
-                new Schedules({
-                    group: this.name,
-                    inst_id: this.instId,
-                    // timetable: {
-                    days,
-                    updateDate: new Date()
-                    // },
-                    // token: this.genToken()
-                }).save().catch(console.log);
-            }
-
-            return this.setSchedule(days);
+            return F(days);
         } catch (error) {
             return null
         }
     }
 
-    async initToken() {
+    
+    async getToken():Promise<string> {
         let groupInfo = await Groups.findOne({group: this.name, inst_id: this.instId}).exec()
 
-        if(groupInfo) this.token = groupInfo?.token;
+        if(groupInfo) return groupInfo.token;
         else {
-            this.token = this.genToken()
+            let token = genToken(this.name, this.instId);
 
             new Groups({
                 group: this.name,
                 inst_id: this.instId,
-                token: this.token
+                token
             }).save().catch(console.log);
+
+            return token;
         }
     }
 }
