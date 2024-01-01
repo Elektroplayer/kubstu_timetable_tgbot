@@ -107,7 +107,7 @@ export default class Group {
 
         let num = weekNumber(date);
 
-        out += `<u><b>${week ? "ЧЁТНАЯ" : "НЕЧЁТНАЯ"} НЕДЕЛЯ | №${num}:</b></u>\n`;
+        out += `<u><b>${week ? "ЧЁТНАЯ" : "НЕЧЁТНАЯ"} НЕДЕЛЯ${num ? ` | №${num}` : ""}:</b></u>\n`;
         schedule.days.filter(elm => elm.even == week).forEach(day => {
             out += `\n<b>${this.parser.days[day.daynum]} | ${F(date)}</b>\n`;
             

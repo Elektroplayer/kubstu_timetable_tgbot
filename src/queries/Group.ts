@@ -35,9 +35,9 @@ export default class GroupQuery extends Query {
         let keyboard: KeyboardButton[][] = [];
         let buffer: KeyboardButton[] = [];
 
-        if(!groups) {
+        if(!groups || groups!.length == 0) {
             Cache.bot.editMessageText(
-                text.split("\n\n").slice(0,text.split("\n\n").length-1).join("\n\n") + "\n\nЧто-то пошло не так! Повтори попытку позже... \nЕсли проблема не уходит, обратись в поддержку: @Elektroplayer",
+                text.split("\n\n").slice(0,text.split("\n\n").length-1).join("\n\n") + "\n\nЧто-то пошло не так! Повтори попытку позже с помощью команды /start... \nЕсли проблема не уходит, обратись в поддержку: @Elektroplayer",
                 {
                     chat_id: query.message.chat.id,
                     message_id: query.message.message_id,
