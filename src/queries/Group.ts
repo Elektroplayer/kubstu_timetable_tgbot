@@ -2,7 +2,7 @@ import { CallbackQuery } from "node-telegram-bot-api";
 import Query from "../structures/Query.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
-import { groupsParser } from "../lib/Utils.js";
+import ScheduleModel from "../models/ScheduleModel.js";
 
 interface KeyboardButton {
     text: string,
@@ -25,15 +25,14 @@ export default class GroupQuery extends Query {
     
         db.kurs = +query.data!.slice(14,query.data!.length);
     
-        let text = query.message!.text;
-        let groups;
+        let text: string     = query.message!.text;
+        let now: Date        = new Date();
+        let groupDate        = (now.getUTCFullYear() - db.kurs + 1 - ( now.getUTCMonth() >= 6 ? 0 : 1)).toString().substring(2);
+        let dbGroups         = await ScheduleModel.find({inst_id: db.inst_id!, group: { $regex: `^${groupDate}-`}});
+        let groups:string[]  = dbGroups.map(elm => elm.group);
 
-        try {
-            groups = await groupsParser(db.inst_id!, db.kurs!);
-        } catch(err) {console.log(err)}
-
-        let keyboard: KeyboardButton[][] = [];
-        let buffer: KeyboardButton[] = [];
+        let keyboard: KeyboardButton[][]  = [];
+        let buffer: KeyboardButton[]      = [];
 
         if(!groups || groups!.length == 0) {
             Cache.bot.editMessageText(
@@ -59,9 +58,6 @@ export default class GroupQuery extends Query {
         }
 
         keyboard.push(buffer);
-
-        let now = new Date();
-        let groupDate = (now.getUTCFullYear() - db.kurs + 1 - ( now.getUTCMonth() >= 6 ? 0 : 1)).toString().substring(2);
 
         Cache.bot.editMessageText(
             text.split("\n\n").slice(0,text.split("\n\n").length-1).join("\n\n") + `\n\nВыбери свою группу. ${groupDate}-...`,
