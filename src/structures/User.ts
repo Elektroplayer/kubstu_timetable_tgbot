@@ -43,20 +43,7 @@ export default class User {
      * Обновление данных
      */
     async updateData(opt: { instId: number, group: string }) {
-        let userData = await Users.findOne({userId: this.id}).exec()
-
-        if(userData) {
-            userData.inst_id = opt.instId;
-            userData.group = opt.group;
-
-            userData.save().catch(console.log);
-        } else {
-            new Users({
-                userId: this.id,
-                inst_id: opt.instId,
-                group: opt.group
-            }).save().catch(console.log);
-        }
+        await Users.findOneAndUpdate({userId: this.id}, { inst_id: opt.instId, group: opt.group }, { upsert: true })
 
         this.setGroup(opt.group, opt.instId)
     }
