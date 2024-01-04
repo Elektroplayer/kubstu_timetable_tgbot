@@ -9,10 +9,19 @@ const schema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    updateDate: Date,
+    updateDate: {
+        type: Date,
+        required: true
+    },
     days: [{
-        daynum: Number,
-        even: Boolean,
+        daynum: {
+            type: Number,
+            required: true,
+        },
+        even: {
+            type: Boolean,
+            required: true,
+        },
         daySchedule: [{
             number: Number,
             time: String,

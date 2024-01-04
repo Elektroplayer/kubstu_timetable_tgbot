@@ -99,6 +99,10 @@ export default class User {
                 }, {
                     text: (this.emoji ? "🔀 " : "") + "Выбрать день",
                 }
+            ],[
+                {
+                    text: (this.emoji ? "👨‍🏫 " : "") + "Расписания учителей",
+                }
             ]
         ];
 

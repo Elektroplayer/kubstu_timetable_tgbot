@@ -64,7 +64,7 @@ export default class Parser {
     /**
      * Возвращает объект с информацией об одной указанной паре
      */
-    private getLessonRaw(week: number, day: number, num: number): Lesson | null {
+    private getLessonRaw(week: number, day: number, num: number): ILesson | null {
         if (!this.root) return null
 
         let headElement = this.root.querySelector(`#heading_n_${week}_d_${day}_i_${num}`)
@@ -98,7 +98,7 @@ export default class Parser {
 
         let paraType = types[headTextArray[2] as keyof typeof types] ?? headTextArray[2];
 
-        let out:Lesson = {
+        let out:ILesson = {
             number,
             time,
             name,

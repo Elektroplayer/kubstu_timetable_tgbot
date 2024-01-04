@@ -13,7 +13,6 @@ export default class Group {
         let now  = new Date();
 
         this.kurs    = now.getUTCFullYear() - 2000 - (now.getUTCMonth() >= 6 ? 0 : 1) - year + 1; // FIXME: Будет работать до 2100 года
-
         this.parser  = new Parser(instId, this.kurs, name);
     }
 
@@ -25,11 +24,11 @@ export default class Group {
      * Если сайт не работает и в БД записей нет, выдаёт null.
      */
     async getFullRawSchedule() {
-        let F = (days: Day[], updateDate = new Date()) => {return {updateDate, days}}
+        let F = (days: IDay[], updateDate = new Date()) => {return {updateDate, days}}
         let dbResponse = await Schedules.findOne({group: this.name, inst_id: this.instId}).exec()
 
         if( dbResponse && new Date().valueOf() - dbResponse.updateDate?.valueOf()! < 1000 * 60 * 60 * 24 * 7)
-            return F(dbResponse.days as Day[], dbResponse.updateDate);
+            return F(dbResponse.days as IDay[], dbResponse.updateDate);
 
         try {
             let days = await this.parser.parseSchedule();
@@ -41,7 +40,7 @@ export default class Group {
 
             return F(days);
         } catch (err) {
-            if(dbResponse) return F(dbResponse.days as Day[], dbResponse.updateDate!)
+            if(dbResponse) return F(dbResponse.days as IDay[], dbResponse.updateDate!)
             return null;
         }
     }
@@ -155,7 +154,7 @@ export default class Group {
 
 
     async updateScheduleFromSite() {
-        let F = (days: Day[], updateDate = new Date()) => {return {updateDate, days}}
+        let F = (days: IDay[], updateDate = new Date()) => {return {updateDate, days}}
 
         try {
             let days = await this.parser.parseSchedule()
