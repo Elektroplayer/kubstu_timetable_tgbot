@@ -10,6 +10,7 @@ export default class User {
     notifications: boolean = false;
     emoji: boolean = true;
     showSettings: boolean = true;
+    showTeachers: boolean = true;
     token?: string;
 
     /**
@@ -35,6 +36,7 @@ export default class User {
             this.notifications = userData?.notifications ?? false;
             this.emoji = userData?.emoji ?? true;
             this.showSettings = userData?.showSettings ?? true;
+            this.showTeachers = userData?.showTeachers ?? true;
             this.token = userData?.token;
         }
     }
@@ -99,14 +101,11 @@ export default class User {
                 }, {
                     text: (this.emoji ? "🔀 " : "") + "Выбрать день",
                 }
-            ],[
-                {
-                    text: (this.emoji ? "👨‍🏫 " : "") + "Расписания учителей",
-                }
             ]
         ];
 
-        if (this.showSettings) arr.push([{ text: (this.emoji ? "⚙️ " : "") + "Настройки" }])
+        if(this.showTeachers) arr.push([{ text: (this.emoji ? "👨‍🏫 " : "") + "Расписания преподавателей" }])
+        if(this.showSettings) arr.push([{ text: (this.emoji ? "⚙️ " : "") + "Настройки" }])
 
         return arr;
     }
@@ -123,6 +122,10 @@ export default class User {
             ],[
                 {
                     text: this.emoji ? ( (this.emoji ? "🙅‍♂️ " : "") + "Выключить эмодзи") : "Включить эмодзи" // Тут нет эмодзи, потому что оно тут в любом случае будет отсутствовать
+                }
+            ],[
+                {
+                    text: this.showTeachers ? ( (this.emoji ? "⚙️ " : "") + "Убрать расписания преподавателей") : ((this.emoji ? "⚙️ " : "") + "Показывать расписания преподавателей")
                 }
             ],[
                 {

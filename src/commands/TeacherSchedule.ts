@@ -4,7 +4,10 @@ import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
 
 export default class TodayCommand extends Command {
-    name = { buttons: { title: "Расписания учителей", emoji: "👨‍🏫" } };
+    name = { buttons: [
+        { title: "Расписания преподавателей", emoji: "👨‍🏫" },
+        { title: "преподаватели", emoji: "" }
+    ]};
     sceneName = ["main"];
 
     nameFormat(name:string) {
@@ -46,7 +49,7 @@ export default class TodayCommand extends Command {
 
         Cache.bot.sendMessage(
             msg.chat.id,
-            "Выбери учителя из списка или введи его ФИО полностью без ошибок\n\n<i>Расписание может быть не точным</i>",
+            "Выбери преподавателя из списка или введи его ФИО полностью без ошибок\n\n<i>Расписание может быть не точным</i>",
             {
                 parse_mode: "HTML",
                 reply_markup: {

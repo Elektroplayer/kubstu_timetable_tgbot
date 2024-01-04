@@ -23,6 +23,10 @@ const schema = new mongoose.Schema({
     showSettings: {
         type: Boolean,
         default: true
+    },
+    showTeachers: {
+        type: Boolean,
+        default: true
     }
 }, { collection: "users" });
 
