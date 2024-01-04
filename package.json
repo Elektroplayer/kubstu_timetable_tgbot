@@ -24,7 +24,7 @@
   "scripts": {
     "start": "node ."
   },
-  "author": "Electroplayer",
+  "author": "Elektroplayer",
   "license": "ISC",
   "description": "Lessons parser for KubSTU's schedule",
   "version": "3.0.0"

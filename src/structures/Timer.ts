@@ -1,6 +1,6 @@
 export default abstract class Timer {
     /**
-     * Время в милисекундах
+     * Время в миллисекундах
      */
     // abstract time: number;
     abstract exec(): void;

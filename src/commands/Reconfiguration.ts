@@ -15,11 +15,9 @@ export default class TodayCommand extends Command {
             return;
         }
 
-        // user.scene = Cache.scenes.find(s => s.name == "settings");
+        let replyText = "Включен режим настройки, укажи заново: \n\nКакой у тебя институт. Если твоего тут нет, значит он может появиться в будущем";
 
-        let replytext = "Включен режим настройки, укажи заново: \n\nКакой у тебя институт. Если твоего тут нет, значит он может появиться в будущем";
-
-        Cache.bot.sendMessage(msg.chat.id, replytext, {
+        Cache.bot.sendMessage(msg.chat.id, replyText, {
             disable_web_page_preview: true,
             reply_markup: {
                 inline_keyboard: instKeyboard,

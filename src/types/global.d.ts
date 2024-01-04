@@ -41,7 +41,7 @@ declare global {
         command?: string
     }
 
-    interface ITeacherShoterLesson {
+    interface ITeacherShorterLesson {
         group: string,
         number: number,
         time: string,
@@ -57,7 +57,7 @@ declare global {
     interface ITeacherDay {
         daynum: number,
         even: boolean,
-        daySchedule: ITeacherShoterLesson[]
+        daySchedule: ITeacherShorterLesson[]
     }
     
     interface ITeacherLesson {

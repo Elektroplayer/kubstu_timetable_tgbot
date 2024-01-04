@@ -55,7 +55,7 @@ export default class UpdaterTimer extends Timer {
     
                     console.log(`[updater] [+] ${inst_id}, ${kurs}, ${group}`);
     
-                    // Обновляем расписание. Если такой группы нет, она создастатся автоматически
+                    // Обновляем расписание. Если такой группы нет, она создастся автоматически
                     await ScheduleModel.findOneAndUpdate({ group, inst_id }, { days, updateDate: new Date() }, { upsert: true })
                 }
             }

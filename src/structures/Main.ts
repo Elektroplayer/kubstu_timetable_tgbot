@@ -17,7 +17,7 @@ export default class Main {
         for (let dirent of readdirSync("./dist/events", {withFileTypes: true})) {
             if (!dirent.name.endsWith(".js")) continue;
 
-            console.log(`[loader] [+] Евент ${dirent.name}`);
+            console.log(`[loader] [+] Ивент ${dirent.name}`);
         
             let eventClass = (await import("../events/" + dirent.name)).default;
             let event:Event = new eventClass();

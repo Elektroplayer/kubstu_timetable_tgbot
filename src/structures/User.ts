@@ -51,7 +51,7 @@ export default class User {
     }
 
     /**
-     * Устновка текущей группы у человека
+     * Установка текущей группы у человека
      */
     async setGroup(group:string, inst_id:number | string) {
         this.group = Cache.groups.find(g => g.name == group)
