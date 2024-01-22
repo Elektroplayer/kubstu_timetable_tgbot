@@ -2,12 +2,13 @@ import fetch from "node-fetch";
 import https from "https";
 import { parse, HTMLElement } from "node-html-parser";
 
-export default class Parser {
+export default class OLectionsParser {
     URL: string;
     root?: HTMLElement;
     days = ["ВОСКРЕСЕНЬЕ", "ПОНЕДЕЛЬНИК", "ВТОРНИК", "СРЕДА", "ЧЕТВЕРГ", "ПЯТНИЦА", "СУББОТА"];
 
     /**
+     * Парсер очных занятий
      * @param instId ID института
      * @param kurs Курс
      * @param semestr Семестр

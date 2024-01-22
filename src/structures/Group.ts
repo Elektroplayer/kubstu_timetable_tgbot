@@ -1,4 +1,4 @@
-import Parser from "./Parser.js";
+import OLectionsParser from "./OLectionsParser.js";
 import Schedules from "../models/ScheduleModel.js";
 import Groups from "../models/GroupsModel.js";
 import Events from "../models/EventsModel.js";
@@ -6,14 +6,14 @@ import { weekNumber, genToken } from "../lib/Utils.js";
 
 export default class Group {
     kurs: number;
-    parser: Parser;
+    parser: OLectionsParser;
 
     constructor(public name: string, public instId: number) {
         let year = +(name[0]+name[1])
         let now  = new Date();
 
         this.kurs    = now.getUTCFullYear() - 2000 - (now.getUTCMonth() >= 6 ? 0 : 1) - year + 1; // FIXME: Будет работать до 2100 года
-        this.parser  = new Parser(instId, this.kurs, name);
+        this.parser  = new OLectionsParser(instId, this.kurs, name);
     }
 
     /**

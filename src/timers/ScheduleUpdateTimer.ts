@@ -1,6 +1,6 @@
 import Timer from "../structures/Timer.js";
 import { CronJob } from "cron";
-import Parser from "../structures/Parser.js";
+import Parser from "../structures/OLectionsParser.js";
 import { groupsParser, insts } from "../lib/Utils.js";
 import ScheduleModel from "../models/ScheduleModel.js";
 import TeacherScheduleModel from '../models/TeacherScheduleModel.js';

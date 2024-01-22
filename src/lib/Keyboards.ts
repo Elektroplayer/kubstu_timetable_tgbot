@@ -4,7 +4,7 @@ import { days, daysEven } from "./Utils.js";
 export let instKeyboard = [
     [
         {
-            text: "ИНГЭ",
+            text: "ИНГиЭ",
             callback_data: "settings_inst_495",
         },{
             text: "ИКСиИБ",
@@ -13,15 +13,15 @@ export let instKeyboard = [
             text: "ИПиПП",
             callback_data: "settings_inst_490",
         },{
-            text: "ИЭУБ",
+            text: "ИЭУиБ",
             callback_data: "settings_inst_29",
         },
     ],[
         {
-            text: "ИСТИ",
+            text: "ИСиТИ",
             callback_data: "settings_inst_538",
         },{
-            text: "ИМРИТТС",
+            text: "ИМРИТиТС",
             callback_data: "settings_inst_539",
         },{
             text: "ИФН",
