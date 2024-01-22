@@ -17,19 +17,23 @@ export default class MessageEvent extends Event {
         let command = user.scene!.commands.find((c) => commandName(c.name).includes(msg.text!) ) ?? user.scene!.commands.find(c => commandName(c.name).length == 0);
 
         if (!command) {
-            if (msg.chat.type == "private") await Cache.bot.sendMessage(msg.chat.id, "Неизвестная команда", {
-                reply_markup: {
-                    keyboard: user.getMainKeyboard(),
-                    resize_keyboard: true,
-                }
-            });
+            if (msg.chat.type == "private") {
+                await Cache.bot.sendMessage(msg.chat.id, "Неизвестная команда", {
+                    reply_markup: {
+                        keyboard: user.getMainKeyboard(),
+                        resize_keyboard: true,
+                    }
+                });
+
+                user.scene = Cache.scenes.find(x => x.name == "main")
+            }
         } else {
 
             // Отправка сообщения в консоль происходит уже после проверки на существование команды (19 строка)
             // Если сообщение не является командой, я не увижу ваше сообщение
             // В добавок в группе можно отключить доступ к сообщениям у бота, команды будут работать
 
-            console.log(`[message] ${msg.from?.username ?? msg.from?.first_name ?? "Нет ника (?)"}, ${msg.from.id}: ${user.group?.name ?? "Не выбрана"}; ${msg.text};` );
+            console.log(`[message] ${msg.from?.username ?? msg.from?.first_name ?? "Нет ника (?)"}, ${msg.from.id}: ${user.group?.name ?? "Не выбрана"}; ${user.scene!.name == "loginpassword" ? "Ввод пароля" : msg.text};` );
 
             await command.middlewares.filter(mw => mw.type == MiddlewareTypes.Pre).forEach(async mw => {
                 await mw.exec(user, msg);

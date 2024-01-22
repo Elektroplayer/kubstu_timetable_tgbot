@@ -65,6 +65,10 @@ export default class User {
         }
     }
 
+    setScene(sceneName: string) {
+        this.scene = Cache.scenes.find(x => x.name == sceneName);
+    }
+
     /**
      * Установка токена
      */
@@ -79,6 +83,9 @@ export default class User {
         }
     }
 
+    /**
+     * Удаление пользователя из БД
+     */
     async delete() {
         return Users.findOneAndRemove({userId: this.id});
         // TODO: Сделать удаление из массива Cache.users
@@ -118,22 +125,20 @@ export default class User {
             [
                 {
                     text: this.notifications ? ( (this.emoji ? "🔕 " : "") + "Выключить напоминания") : ((this.emoji ? "🔔 " : "") + "Включить напоминания")
-                }
-            ],[
-                {
+                },{
                     text: this.emoji ? ( (this.emoji ? "🙅‍♂️ " : "") + "Выключить эмодзи") : "Включить эмодзи" // Тут нет эмодзи, потому что оно тут в любом случае будет отсутствовать
                 }
             ],[
                 {
                     text: this.showTeachers ? ( (this.emoji ? "⚙️ " : "") + "Убрать расписания преподавателей") : ((this.emoji ? "⚙️ " : "") + "Показывать расписания преподавателей")
-                }
-            ],[
-                {
+                },{
                     text: this.showSettings ? ( (this.emoji ? "⚙️ " : "") + "Убрать настройки") : ((this.emoji ? "⚙️ " : "") + "Показывать настройки")
                 }
             ],[
                 {
                     text: (this.emoji ? "⚙️ " : "") + "Перенастроить бота"
+                },{
+                    text: (this.emoji ? "⚙️ " : "") + "Обновить экзамены"
                 }
             ],[
                 {

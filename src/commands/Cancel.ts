@@ -5,10 +5,10 @@ import Cache from "../lib/Cache.js";
 
 export default class TodayCommand extends Command {
     name = { buttons: { title: "Отмена", emoji: "🛑" } };
-    sceneName = ["settings"];
+    sceneName = ["settings", "loginpassword"];
 
     async exec(user: User, msg: Message): Promise<void> {
-        user.scene = Cache.scenes.find(s => s.name == "main");
+        user.setScene("main");
 
         Cache.bot.sendMessage(msg.chat.id, "Возвращаемся...", {
             disable_web_page_preview: true,

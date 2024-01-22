@@ -3,6 +3,7 @@ import Schedules from "../models/ScheduleModel.js";
 import Groups from "../models/GroupsModel.js";
 import Events from "../models/EventsModel.js";
 import { weekNumber, genToken } from "../lib/Utils.js";
+import ExamsModel from "../models/ExamsModel.js";
 
 export default class Group {
     kurs: number;
@@ -120,6 +121,16 @@ export default class Group {
         return out;
     }
 
+    async getTextExams() {
+        let exams = (await ExamsModel.findOne({group: this.name, inst_id: this.instId}).exec())?.exams
+
+        if(!exams) return `У меня нет расписания экзаменов для твоей группы.\n\nЕсли ты хочешь добавить расписание экзаменов для своей группы, перейди в /settings и нажми "Обновить экзамены".`;
+        else {
+            let F = (date: Date) => `${date.getUTCHours().toString().padStart(2, '0')}:${date.getUTCMinutes().toString().padStart(2, '0')} ${date.getUTCDate().toString().padStart(2, '0')}.${(date.getUTCMonth()+1).toString().padStart(2, '0')}.${date.getUTCFullYear()}`;
+
+            return `<u><b>РАСПИСАНИЕ ЭКЗАМЕНОВ</b></u>\n\n` + exams.reduce((acc, x) => acc + `<b>${F(x.date!)} / ${x.name}</b>\n  Преподаватель: ${x.teacher}\n  Аудитория: ${x.auditory}\n\n`, "")
+        }
+    }
 
     async getTextEvents(date = new Date()): Promise<string | null> {
         date.setUTCHours(0,0,0,0);
