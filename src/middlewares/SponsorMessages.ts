@@ -1,10 +1,10 @@
 import { Message } from "node-telegram-bot-api";
-import { Middleware, MiddlewareTypes } from "../structures/Middleware.js";
+import Middleware from "../structures/Middleware.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
 
 class SponsorMessagesMiddleware extends Middleware {
-    type = MiddlewareTypes.Post;
+    type = Middleware.types.Post;
 
     users:{id: number, count: number}[] = [];
 
@@ -23,7 +23,9 @@ class SponsorMessagesMiddleware extends Middleware {
 
         "Если у тебя резко пропали кнопки внизу, напиши /start",
         "Иногда нужно смотреть шире, чем обычно.\n\n/showall покажет расписание полностью",
-        "Несоответствие в расписании? Напиши /update"
+        "Несоответствие в расписании?\n\nОбнови расписание прямо сейчас /update",
+        "Не можешь запомнить имена преподавателей?\n\nВыведи список преподавателей по команде /teachers",
+        "Кому не лень заходить на сайт, логиниться в кабинете, чтобы посмотреть экзамены?\n\nНастрой команду /exams"
 
 
         // "<b>ВНИМАНИЕ! ЧЕРЕЗ НЕДЕЛЮ БОТ ЗАКРЫВАЕТСЯ!</b>\n\nШутка) Но не очень приятная. Я много плачу за хост, поэтому чтобы такого реально не произошло, в /start можешь узнать, как меня можно поддержать."

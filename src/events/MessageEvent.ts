@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import Event from "../structures/Event.js";
 import Cache from "../lib/Cache.js";
-import { MiddlewareTypes } from "../structures/Middleware.js"
+import Middleware from "../structures/Middleware.js"
 import { commandName } from "../lib/Utils.js";
 
 export default class MessageEvent extends Event {
@@ -35,13 +35,13 @@ export default class MessageEvent extends Event {
 
             console.log(`[message] ${msg.from?.username ?? msg.from?.first_name ?? "Нет ника (?)"}, ${msg.from.id}: ${user.group?.name ?? "Не выбрана"}; ${user.scene!.name == "loginpassword" ? "Ввод пароля" : msg.text};` );
 
-            await command.middlewares.filter(mw => mw.type == MiddlewareTypes.Pre).forEach(async mw => {
+            await command.middlewares.filter(mw => mw.type == Middleware.types.Pre).forEach(async mw => {
                 await mw.exec(user, msg);
             });
 
             await command.exec(user, msg);
 
-            await command.middlewares.filter(mw => mw.type == MiddlewareTypes.Post).forEach(async mw => {
+            await command.middlewares.filter(mw => mw.type == Middleware.types.Post).forEach(async mw => {
                 await mw.exec(user, msg);
             });
         }
