@@ -14,10 +14,7 @@ export default class NearestCommand extends Command {
     middlewares = [SponsorMessagesMiddleware];
 
     async exec(user: User, msg: Message): Promise<void> {
-        if(!user.group) {
-            Cache.bot.sendMessage(msg.chat.id, "У меня нет данных о тебе. Напиши /start" + ( msg.chat.type == "group" ? " мне в личные сообщения." : "."));
-            return;
-        }
+        if(!user.group) return;
 
         let date = new Date();
 

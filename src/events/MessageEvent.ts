@@ -35,15 +35,21 @@ export default class MessageEvent extends Event {
 
             console.log(`[message] ${msg.from?.username ?? msg.from?.first_name ?? "Нет ника (?)"}, ${msg.from.id}: ${user.group?.name ?? "Не выбрана"}; ${user.scene!.name == "loginpassword" ? "Ввод пароля" : msg.text};` );
 
-            await command.middlewares.filter(mw => mw.type == Middleware.types.Pre).forEach(async mw => {
-                await mw.exec(user, msg);
-            });
+            // await command.middlewares.filter(mw => mw.type == Middleware.types.Pre).forEach(async mw => {
+            //     await mw.exec(user, msg);
+            // });
+
+            // Проверяем, все ли middlewares "согласны"
+            let condition = command.middlewares
+            .filter(mw => mw.type == Middleware.types.Pre)
+            .some(mw => ![0, undefined].includes(mw.exec(user, msg)!));
+
+            if(condition) return;
 
             await command.exec(user, msg);
 
-            await command.middlewares.filter(mw => mw.type == Middleware.types.Post).forEach(async mw => {
-                await mw.exec(user, msg);
-            });
+            // Выполняем, как я их называл postwares
+            command.middlewares.filter(mw => mw.type == Middleware.types.Post).forEach(mw => mw.exec(user, msg));
         }
     }
 }

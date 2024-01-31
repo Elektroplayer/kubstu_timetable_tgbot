@@ -3,6 +3,7 @@ import Command from "../structures/Command.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
 import SponsorMessagesMiddleware from "../middlewares/SponsorMessages.js";
+import GroupTestMiddleware from "../middlewares/GroupTestMiddleware.js";
 
 export default class TodayCommand extends Command {
     name = {
@@ -11,13 +12,10 @@ export default class TodayCommand extends Command {
     };
 
     sceneName = ["main"];
-    middlewares = [SponsorMessagesMiddleware];
+    middlewares = [SponsorMessagesMiddleware, GroupTestMiddleware];
 
     async exec(user: User, msg: Message): Promise<void> {
-        if(!user.group) {
-            Cache.bot.sendMessage(msg.chat.id, "У меня нет данных о тебе. Напиши /start" + ( msg.chat.type == "group" ? " мне в личные сообщения." : "."));
-            return;
-        }
+        if(!user.group) return;
 
         let text;
         let schedule = await user.group.getTextSchedule(undefined, undefined, new Date());

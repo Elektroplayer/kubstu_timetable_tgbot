@@ -31,7 +31,7 @@ class SponsorMessagesMiddleware extends Middleware {
         // "<b>ВНИМАНИЕ! ЧЕРЕЗ НЕДЕЛЮ БОТ ЗАКРЫВАЕТСЯ!</b>\n\nШутка) Но не очень приятная. Я много плачу за хост, поэтому чтобы такого реально не произошло, в /start можешь узнать, как меня можно поддержать."
     ];
 
-    exec(user: User, msg: Message): void {
+    exec(user: User, msg: Message): any {
         if(msg.chat.type !== "private") return;
 
         let thisUser = this.users.find(u => u.id == user.id);

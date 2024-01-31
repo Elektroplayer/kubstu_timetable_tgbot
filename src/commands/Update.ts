@@ -2,17 +2,16 @@ import { Message } from "node-telegram-bot-api";
 import Command from "../structures/Command.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
+import GroupTestMiddleware from "../middlewares/GroupTestMiddleware.js";
 
 export default class TodayCommand extends Command {
     name = { command: "update" };
     sceneName = ["main"];
+    middlewares = [GroupTestMiddleware]
 
     async exec(user: User, msg: Message): Promise<void> {
-        if(!user.group) {
-            Cache.bot.sendMessage(msg.chat.id, "У меня нет данных о тебе. Напиши /start" + ( msg.chat.type == "group" ? " мне в личные сообщения." : "."));
-            return;
-        }
-
+        if(!user.group) return;
+    
         let schedule = await user.group.getFullRawSchedule()
 
         if(schedule && new Date().valueOf() - schedule.updateDate.valueOf() < 1000 * 60 * 60) {
@@ -30,7 +29,7 @@ export default class TodayCommand extends Command {
             return;
         }
 
-        let r = user.group.updateScheduleFromSite() // response
+        let r = await user.group.updateScheduleFromSite() // response
         
         Cache.bot.sendMessage(
             msg.chat.id,

@@ -3,6 +3,7 @@ import Command from "../structures/Command.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
 import SponsorMessagesMiddleware from "../middlewares/SponsorMessages.js"
+import GroupTestMiddleware from "../middlewares/GroupTestMiddleware.js";
 
 export default class SelectingDayCommand extends Command {
     name = { buttons: [
@@ -21,18 +22,10 @@ export default class SelectingDayCommand extends Command {
     ]};
 
     sceneName = ["main"];
-    middlewares = [SponsorMessagesMiddleware];
+    middlewares = [SponsorMessagesMiddleware, GroupTestMiddleware];
 
     async exec(user: User, msg: Message): Promise<void> {
-        if (!user.group) {
-            Cache.bot.sendMessage(
-                user.id,
-                "У меня нет данных о тебе. Напиши /start"
-            );
-            return;
-        }
-
-        if (msg.chat.type !== "private") return;
+        if (!user.group || msg.chat.type !== "private") return;
 
         let text;
         let day       = (this.name.buttons.indexOf(msg.text!) + 1) % 6 || 6;

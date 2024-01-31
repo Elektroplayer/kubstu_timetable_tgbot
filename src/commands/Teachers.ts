@@ -2,10 +2,12 @@ import { Message } from "node-telegram-bot-api";
 import Command from "../structures/Command.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
+import GroupTestMiddleware from "../middlewares/GroupTestMiddleware.js";
 
 export default class TodayCommand extends Command {
     name = { command: "teachers" };
     sceneName = ["main"];
+    middlewares = [GroupTestMiddleware];
 
     nameFormat(name:string) {
         let nameArr = name.split(" ");
@@ -18,10 +20,7 @@ export default class TodayCommand extends Command {
     }
 
     async exec(user: User, msg: Message): Promise<void> {
-        if(!user.group) {
-            Cache.bot.sendMessage(msg.chat.id, "У меня нет данных о тебе. Напиши /start" + ( msg.chat.type != "private" ? " мне в личные сообщения." : "."));
-            return;
-        }
+        if(!user.group) return;
 
         let schedule = await user.group.getFullRawSchedule();
         let lessons:{[key:string]: { [key: string]: string[] }} = {};
@@ -49,8 +48,7 @@ export default class TodayCommand extends Command {
         }
 
         Cache.bot.sendMessage(
-            msg.chat.id,
-            out,
+            msg.chat.id, out,
             {
                 parse_mode: "HTML",
                 reply_markup: { remove_keyboard: msg.chat.type !== "private" }

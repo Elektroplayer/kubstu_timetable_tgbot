@@ -34,10 +34,10 @@ export default class Group {
         try {
             let days = await this.parser.parseSchedule();
 
-            Schedules.findOneAndUpdate({ group: this.name, inst_id: this.instId }, {
+            await Schedules.findOneAndUpdate({ group: this.name, inst_id: this.instId }, {
                 days,
                 updateDate: new Date()
-            }, { upsert: true });
+            }, { upsert: true }).catch(console.log);
 
             return F(days);
         } catch (err) {
