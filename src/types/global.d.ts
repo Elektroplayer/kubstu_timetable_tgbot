@@ -41,7 +41,7 @@ declare global {
         command?: string
     }
 
-    interface ITeacherShorterLesson {
+    interface ITeacherLesson {
         group: string,
         number: number,
         time: string,
@@ -57,23 +57,7 @@ declare global {
     interface ITeacherDay {
         daynum: number,
         even: boolean,
-        daySchedule: ITeacherShorterLesson[]
-    }
-    
-    interface ITeacherLesson {
-        daynum: number,
-        even: boolean,
-    
-        group: string,
-        number: number,
-        time: string,
-        name: string,
-        paraType: string,
-        auditory: string,
-        remark?: string,
-        percent?: string,
-        period?: string,
-        flow?: boolean
+        daySchedule: ITeacherLesson[]
     }
 
     // Костыль, но работает

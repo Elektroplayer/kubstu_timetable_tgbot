@@ -24,13 +24,15 @@ export default class UpdaterTimer extends Timer {
         let parser: Parser;
         let group: string;
         let days: IDay[] | undefined;
+        let bulk = ScheduleModel.collection.initializeOrderedBulkOp();
+        let updateDate = new Date();
     
         for(let i=0;i<insts.length;i++) {
             console.log(`[updater] ${insts[i]}:`)
     
             for(let kurs=1;kurs<=6;kurs++) {
                 inst_id  = insts[i];
-                groups   = undefined; // Очищаем текущую группу
+                groups   = undefined; // Очищаем массив групп
     
                 try {
                     groups = await groupsParser(inst_id, kurs) // Парсим все группы с сайта
@@ -53,22 +55,24 @@ export default class UpdaterTimer extends Timer {
     
                     if(!days) continue;
     
-                    console.log(`[updater] [+] ${inst_id}, ${kurs}, ${group}`);
+                    // console.log(`[updater] [+] ${inst_id}, ${kurs}, ${group}`);
     
                     // Обновляем расписание. Если такой группы нет, она создастся автоматически
-                    await ScheduleModel.findOneAndUpdate({ group, inst_id }, { days, updateDate: new Date() }, { upsert: true })
+                    // await ScheduleModel.findOneAndUpdate({ group, inst_id }, { days, updateDate: new Date() }, { upsert: true })
+                    bulk.find({ group, inst_id }).upsert().updateOne({ $set: { days, updateDate } })
                 }
             }
         }
-    
-        console.log("[updater] Расписания обновлены!");
+
+        // Отправляем изменения в БД
+        await bulk.execute().then(() => console.log(`[updater] Расписания обновлены!`), console.log);
     }
 
     async updateTeacherSchedules() {
-        console.log(`[updater] Приступаю к обновлению расписаний учителей`);
+        console.log(`[updater] Приступаю к обновлению расписаний преподавателей!`);
 
         let schedules = await ScheduleModel.find({}).exec(); // Получение всех расписаний
-        let teachersSchedule:{[key: string]: ITeacherLesson[]} = {}; // Тут будут храниться пары у преподавателей
+        let teachersSchedule:{[key: string]: ITeacherDay[]} = {}; // Тут будут храниться расписания у преподавателей
         let updateDate = new Date(); // Дата обновления (сейчас)
     
         schedules.forEach((group) => {
@@ -76,12 +80,12 @@ export default class UpdaterTimer extends Timer {
     
             group.days.forEach((day) => {
                 day.daySchedule.forEach((lesson) => {
-                    if(!teachersSchedule[lesson.teacher!]) teachersSchedule[lesson.teacher!] = []; // Создаём для преподавателя массив его пар
+                    if(lesson.teacher == "Не назначен") return;
     
-                    let out:ITeacherLesson = {
-                        daynum: day.daynum,
-                        even: day.even,
+                    if(!teachersSchedule[lesson.teacher!]) teachersSchedule[lesson.teacher!] = []; // Создаём для преподавателя массив его дней, если этого массива нет
                     
+                    // Переменная содержащая инфу о паре
+                    let out:ITeacherLesson = {   
                         group: group.group,
                         number: lesson.number!,
                         time: lesson.time!,
@@ -94,33 +98,20 @@ export default class UpdaterTimer extends Timer {
                     if(lesson.percent) out.percent = lesson.percent;
                     if(lesson.period) out.period = lesson.period;
                     if(lesson.flow) out.flow = lesson.flow;
-    
-                    teachersSchedule[lesson.teacher!].push(out) // Добавляем пару
+                    
+                    // Тут добавляем сам день, а если он уже есть, то вставляем в него пару
+                    if(!teachersSchedule[lesson.teacher!].find(elm => elm.daynum == day.daynum && elm.even == day.even))
+                        teachersSchedule[lesson.teacher!].push({daynum: day.daynum, even: day.even, daySchedule: [out]})
+                    else teachersSchedule[lesson.teacher!].find(elm => elm.daynum == day.daynum && elm.even == day.even)!.daySchedule.push(out)
                 })
             })
         })
     
-        // Пары нужно отсортировать по дням, в которые они будут
-        Object.keys(teachersSchedule).forEach(async (teacher) => {
-            if(teacher == "Не назначен") return; // Самый популярный препод
+        // Обновляем БД
+        let bulk = TeacherScheduleModel.collection.initializeOrderedBulkOp()
     
-            let sorted:ITeacherDay[] = [] // Тут будут хранится сортированные пары преподавателя
+        Object.keys(teachersSchedule).forEach(teacher => bulk.find({ name: teacher }).upsert().updateOne({ $set: { updateDate, days: teachersSchedule[teacher] }}))
     
-            for (let week = 1; week <= 2; week++) {
-                for (let daynum = 1; daynum <= 6; daynum++) {
-                    let daySchedule = teachersSchedule[teacher].filter(elm => elm.even == (week == 2) && elm.daynum == daynum) // Получаем пары в конкретный день
-    
-                    if(daySchedule.length == 0) continue; // Пропускаем, если их нет
-
-                    daySchedule.sort((a, b) => a.number - b.number) // Сортируем
-                    sorted.push({ daynum, daySchedule, even: week == 2 }) // Добавляем
-                }
-            }
-    
-            // Итоговое отсортированное расписание отправляем в БД
-            await TeacherScheduleModel.findOneAndUpdate({ name: teacher }, { updateDate, days: sorted }, { upsert: true }).then(() => {
-                console.log(`[updater] ${teacher}`)
-            });            
-        })
+        await bulk.execute().then(() => console.log(`[updater] Расписания преподавателей обновлены!`), console.log);
     }
 }
