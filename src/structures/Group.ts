@@ -88,7 +88,7 @@ export default class Group {
     async getTextFullSchedule(week:boolean) {
         let out = "";
         let schedule = await this.getFullRawSchedule();
-        let F = (date:Date) => `${date.getUTCDate()}.${date.getUTCMonth()}.${date.getUTCFullYear()}`;
+        let F = (date:Date) => `${date.getUTCDate()}.${date.getUTCMonth()+1}.${date.getUTCFullYear()}`;
         
         let dict:{[index: string]: string} = {
             "Лабораторная": "Лаб",
