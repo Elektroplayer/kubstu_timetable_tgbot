@@ -19,7 +19,7 @@ export default class TodayCommand extends Command {
 
     getTextFullSchedule(week:boolean, schedule:{days: ITeacherDay[], name: string, updateDate: Date}) {
         let out = "";
-        let F = (date:Date) => `${date.getUTCDate()}.${date.getUTCMonth()}.${date.getUTCFullYear()}`;
+        let F = (date:Date) => `${date.getUTCDate()}.${date.getUTCMonth()+1}.${date.getUTCFullYear()}`;
         
         let dict:{[index: string]: string} = {
             "Лабораторная": "Лаб",
