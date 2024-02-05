@@ -44,8 +44,8 @@ export function weekNumber(date: Date = new Date()) {
 
     startDate.setUTCHours(0, 0, 0, 0)
 
-    if(date.getMonth() > 5) {
-        // Ставим второе сентября. Первое праздник
+    if(date.getMonth() > 7) {
+        // Ставим 2 сентября. Первое праздник
         startDate.setUTCMonth(8, 2);
 
         // Находим дату понедельника текущей недели
@@ -57,8 +57,19 @@ export function weekNumber(date: Date = new Date()) {
         // Переводим в недели, округляем в большую сторону и выводим.
         return Math.round(diff / (1000*60*60*24*7)) + 1;
     } else {
-        // TODO: Доделать во втором семестре.
-        return null;
+        // FIXME: НЕ ТОЧНО!
+
+        // Ставим 9 января.
+        startDate.setUTCMonth(0, 9);
+
+        // Находим дату понедельника текущей недели
+        startDate.setUTCDate(2-startDate.getUTCDay()+1) 
+
+        // Находим разницу между данной датой и датой первого дня недели в мс.
+        let diff = date.valueOf() - startDate.valueOf();
+        
+        // Переводим в недели, округляем в большую сторону и выводим.
+        return Math.round(diff / (1000*60*60*24*7)) + 1;
     }
 }
 
