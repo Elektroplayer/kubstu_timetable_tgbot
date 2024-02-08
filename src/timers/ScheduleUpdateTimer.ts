@@ -11,6 +11,23 @@ export default class UpdaterTimer extends Timer {
         // new CronJob('0 */5 * * * *', this.exec, null, true, 'Europe/Moscow', this); // Каждые пять минут
     }
 
+    compare(lesson1:ITeacherLesson, lesson2:ITeacherLesson) {
+        return lesson1.number == lesson2.number &&
+        lesson1.time == lesson2.time &&
+        lesson1.name == lesson2.name &&
+        lesson1.paraType == lesson2.paraType &&
+        lesson1.auditory == lesson2.auditory &&
+        lesson1.period == lesson2.period
+    }
+    
+    combine(lesson1:ITeacherLesson, lesson2:ITeacherLesson) {
+        let out:ITeacherLesson = {...lesson1};
+    
+        out.group = `${lesson1.group} | ${lesson2.group}`
+    
+        return out;
+    }
+
     async exec() {
         await this.updateSchedules();
         await this.updateTeacherSchedules();
@@ -55,10 +72,9 @@ export default class UpdaterTimer extends Timer {
     
                     if(!days) continue;
     
-                    // console.log(`[updater] [+] ${inst_id}, ${kurs}, ${group}`);
+                    // console.log(`[updater] [+] ${inst_id}, ${kurs}, ${group}`); // Нужно скорее для дебага
     
                     // Обновляем расписание. Если такой группы нет, она создастся автоматически
-                    // await ScheduleModel.findOneAndUpdate({ group, inst_id }, { days, updateDate: new Date() }, { upsert: true })
                     bulk.find({ group, inst_id }).upsert().updateOne({ $set: { days, updateDate } })
                 }
             }
@@ -72,6 +88,7 @@ export default class UpdaterTimer extends Timer {
         console.log(`[updater] Приступаю к обновлению расписаний преподавателей!`);
 
         let schedules = await ScheduleModel.find({}).exec(); // Получение всех расписаний
+        let teachersScheduleDB = await TeacherScheduleModel.find({}).exec(); // Получение всех расписаний учителей
         let teachersSchedule:{[key: string]: ITeacherDay[]} = {}; // Тут будут храниться расписания у преподавателей
         let updateDate = new Date(); // Дата обновления (сейчас)
     
@@ -106,12 +123,37 @@ export default class UpdaterTimer extends Timer {
                 })
             })
         })
-    
+
         // Обновляем БД
-        let bulk = TeacherScheduleModel.collection.initializeOrderedBulkOp()
+        let bulk = TeacherScheduleModel.collection.initializeOrderedBulkOp();
+
+        // Находим учителей, которых не оказалось в расписании
+        let teacherNames = Object.keys(teachersSchedule);
+        let absentTeachers = teachersScheduleDB.map(elm => elm.name).filter(elm => !teacherNames.includes(elm));
+
+        // Удаляем тех, кого нет
+        if(absentTeachers.length) bulk.find({name: {$in: absentTeachers}}).delete();
+
+        for(let teacher in teachersSchedule) {
+            // Сортируем по дням недели
+            teachersSchedule[teacher].sort((a, b) => a.daynum - b.daynum);
+
+            for(let day in teachersSchedule[teacher]) {
+                // Сортируем по номерам пар
+                teachersSchedule[teacher][day].daySchedule.sort((a, b) => a.number - b.number);
     
-        Object.keys(teachersSchedule).forEach(teacher => bulk.find({ name: teacher }).upsert().updateOne({ $set: { updateDate, days: teachersSchedule[teacher] }}))
+                // Объединение одинаковых пар
+                for(let i = 0; i<teachersSchedule[teacher][day].daySchedule.length-1; i++) {
+                    if(this.compare(teachersSchedule[teacher][day].daySchedule[i], teachersSchedule[teacher][day].daySchedule[i+1])) {
+                        teachersSchedule[teacher][day].daySchedule[i] = this.combine(teachersSchedule[teacher][day].daySchedule[i], teachersSchedule[teacher][day].daySchedule[i+1]);
+                        teachersSchedule[teacher][day].daySchedule.splice(i + 1, 1);
+                    }
+                }
+            }
     
+            bulk.find({ name: teacher }).upsert().updateOne({$set: { updateDate, days: teachersSchedule[teacher] }});
+        }
+
         await bulk.execute().then(() => console.log(`[updater] Расписания преподавателей обновлены!`), console.log);
     }
 }

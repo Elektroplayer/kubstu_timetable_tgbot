@@ -1,9 +1,15 @@
-import { Message } from "node-telegram-bot-api";
+import { Message, SendMessageOptions } from "node-telegram-bot-api";
 import Command from "../structures/Command.js";
 import User from "../structures/User.js";
 import Cache from "../lib/Cache.js";
 import TeacherScheduleModel from "../models/TeacherScheduleModel.js";
 import { weekNumber } from "../lib/Utils.js";
+
+interface ITeacherSchedule {
+    days: ITeacherDay[],
+    name: string, 
+    updateDate: Date
+}
 
 export default class TodayCommand extends Command {
     name = {};
@@ -17,7 +23,7 @@ export default class TodayCommand extends Command {
         return `${nameArr[0]} ${nameArr[1][0]}. ${nameArr[2][0]}.`
     }
 
-    getTextFullSchedule(week:boolean, schedule:{days: ITeacherDay[], name: string, updateDate: Date}) {
+    getTextFullSchedule(week:boolean, schedule:ITeacherSchedule) {
         let out = "";
         let F = (date:Date) => `${date.getUTCDate()}.${date.getUTCMonth()+1}.${date.getUTCFullYear()}`;
         
@@ -38,7 +44,7 @@ export default class TodayCommand extends Command {
         if(date.getWeek()%2==0 != week) date.setUTCDate(date.getUTCDate()+7);
 
         out += `<u><b>${week ? "ЧЁТНАЯ" : "НЕЧЁТНАЯ"} НЕДЕЛЯ:</b></u>\n`;
-        schedule.days.filter(elm => elm.even == week).forEach(day => {
+        schedule.days.filter(elm => elm.even == week).forEach((day, i, arr) => {
             out += `\n<b>${this.days[day.daynum]} | ${F(date)}</b>\n`;
             
             day.daySchedule.forEach(lesson => {
@@ -59,84 +65,55 @@ export default class TodayCommand extends Command {
                 out += para + '\n'
             });
 
-            date.setUTCDate(date.getUTCDate()+1)
+            if(arr[i+1]) date.setUTCDate(date.getUTCDate()+(arr[i+1].daynum - day.daynum));
         });
 
         return out;
     }
 
     async exec(user: User, msg: Message): Promise<void> {
-        user.scene = Cache.scenes.find(s => s.name == "main");
+        user.setScene("main");
 
         let schedule = await user.group!.getFullRawSchedule();
-        let teachers: string[] = [];
+        let dict: { [key:string]: string } = {}
+
+        let options:SendMessageOptions = {
+            parse_mode: "HTML",
+            reply_markup: {
+                keyboard: user.getMainKeyboard(),
+                resize_keyboard: true,
+                remove_keyboard: msg.chat.type !== "private"
+            }
+        }
 
         if(schedule) {
             schedule.days.forEach(day => {
                 day.daySchedule.forEach(lesson => {
-                    if(lesson.teacher !== "Не назначен" && !teachers.includes(lesson.teacher!)) teachers.push(lesson.teacher!);
-                })
-            })
+                    if(lesson.teacher && lesson.teacher !== "Не назначен" && !dict[this.nameFormat(lesson.teacher)]) dict[this.nameFormat(lesson.teacher)] = lesson.teacher;
+                });
+            });
         }
-
-        let dict: { [key:string]: string } = {}
-        
-        teachers.forEach(name => {
-            dict[this.nameFormat(name)] = name;
-        })
 
         let teacherSchedule = await TeacherScheduleModel.findOne({$or: [{name: dict[msg.text!]}, {name: msg.text}]}).exec();
 
         if(!teacherSchedule) {
-            Cache.bot.sendMessage(
-                msg.chat.id,
-                "Я не знаю такого учителя. Проверь всё ли верно ты написал и попробуй ещё раз",
-                {
-                    parse_mode: "HTML",
-                    reply_markup: {
-                        keyboard: user.getMainKeyboard(),
-                        resize_keyboard: true,
-                        remove_keyboard: msg.chat.type !== "private"
-                    }
-                }
-            );
+            Cache.bot.sendMessage(msg.chat.id, "Я не знаю такого учителя. Проверь всё ли верно ты написал и попробуй ещё раз", options);
 
             return;
         }
 
         let date = new Date();
 
-        let schedule1 = this.getTextFullSchedule(date.getWeek()%2==0, teacherSchedule as {days: ITeacherDay[], name: string, updateDate: Date});
-        let schedule2 = this.getTextFullSchedule(date.getWeek()%2==1, teacherSchedule as {days: ITeacherDay[], name: string, updateDate: Date});
+        let schedule1 = this.getTextFullSchedule(date.getWeek()%2==0, teacherSchedule as ITeacherSchedule);
+        let schedule2 = this.getTextFullSchedule(date.getWeek()%2==1, teacherSchedule as ITeacherSchedule);
 
-        if(schedule1) {
-            await Cache.bot.sendMessage(
-                msg.chat.id,
-                schedule1,
-                {
-                    parse_mode: "HTML",
-                    reply_markup: {
-                        keyboard: user.getMainKeyboard(),
-                        resize_keyboard: true,
-                        remove_keyboard: msg.chat.type !== "private"
-                    }
-                }
-            );
+        if((schedule1 && schedule1?.length > 4096) || (schedule2 && schedule2?.length > 4096)) {
+            await Cache.bot.sendMessage(msg.chat.id, `<b>Извини, у этого преподавателя слишком большое расписание</b>\n\nЯ уже работаю над этой проблемой`, options);
+
+            return;
         }
 
-        if(schedule2) {
-            await Cache.bot.sendMessage(
-                msg.chat.id,
-                schedule2,
-                {
-                    parse_mode: "HTML",
-                    reply_markup: {
-                        keyboard: user.getMainKeyboard(),
-                        resize_keyboard: true,
-                        remove_keyboard: msg.chat.type !== "private"
-                    }
-                }
-            );
-        }        
+        if(schedule1) await Cache.bot.sendMessage(msg.chat.id, schedule1, options);
+        if(schedule2) await Cache.bot.sendMessage(msg.chat.id, schedule2, options);
     }
 }
