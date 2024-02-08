@@ -35,16 +35,20 @@ export default class TodayCommand extends Command {
         
         if(schedule == null || schedule == undefined) return null; // "<b>Произошла ошибка<b>\nСкорее всего сайт с расписанием не работает...";
         
-        let date = new Date();
-        let num = weekNumber(date);
+        let date  = new Date();
+        let num   = weekNumber(date);
+        let days  = schedule.days.filter(elm => elm.even == week);
 
         date.setUTCHours(0, 0, 0, 0);
         date.setUTCDate(date.getUTCDate() - date.getUTCDay() + 1); // Находим понедельник
 
-        if(date.getWeek()%2==0 != week) date.setUTCDate(date.getUTCDate()+7);
+        if(date.getWeek()%2==0 != week) date.setUTCDate(date.getUTCDate() + 7); // Добавляем неделю если текущая неделя не сходится по чётности с заданной чётностью недели
+
+        if(days[0].daynum > 1) date.setUTCDate(date.getUTCDate() + days[0].daynum - 1)
 
         out += `<u><b>${week ? "ЧЁТНАЯ" : "НЕЧЁТНАЯ"} НЕДЕЛЯ:</b></u>\n`;
-        schedule.days.filter(elm => elm.even == week).forEach((day, i, arr) => {
+
+        days.forEach((day, i, arr) => {
             out += `\n<b>${this.days[day.daynum]} | ${F(date)}</b>\n`;
             
             day.daySchedule.forEach(lesson => {
