@@ -3,26 +3,23 @@
   "main": "./dist/index.js",
   "type": "module",
   "dependencies": {
-    "cron": "^2.4.3",
-    "dotenv": "^16.3.1",
+    "cron": "^3.1.6",
     "fs": "^0.0.1-security",
     "https": "^1.0.0",
-    "mongoose": "^7.5.2",
+    "mongoose": "^8.1.2",
     "node-fetch": "^3.3.2",
-    "node-html-parser": "^6.1.10",
+    "node-html-parser": "^6.1.12",
     "node-telegram-bot-api": "^0.63.0"
   },
   "devDependencies": {
-    "@types/cron": "^2.4.0",
-    "@types/node-telegram-bot-api": "^0.61.7",
-    "bun-types": "latest",
-    "eslint": "^8.49.0"
+    "@types/node-telegram-bot-api": "^0.64.2",
+    "eslint": "^8.56.0"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "start": "node ."
+    "start": "node --env-file=.env ."
   },
   "author": "Elektroplayer",
   "license": "ISC",

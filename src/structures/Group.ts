@@ -128,7 +128,9 @@ export default class Group {
         else {
             let F = (date: Date) => `${date.getUTCHours().toString().padStart(2, '0')}:${date.getUTCMinutes().toString().padStart(2, '0')} ${date.getUTCDate().toString().padStart(2, '0')}.${(date.getUTCMonth()+1).toString().padStart(2, '0')}.${date.getUTCFullYear()}`;
 
-            return `<u><b>РАСПИСАНИЕ ЭКЗАМЕНОВ</b></u>\n\n` + exams.reduce((acc, x) => acc + `<b>${F(x.date!)} / ${x.name}</b>\n  Преподаватель: ${x.teacher}\n  Аудитория: ${x.auditory}\n\n`, "")
+            let examsSchedule = exams.reduce((acc, x) => acc + `<b>${F(x.date!)} / ${x.name}</b>\n  Преподаватель: ${x.teacher}\n  Аудитория: ${x.auditory}\n\n`, "")
+
+            return `<u><b>РАСПИСАНИЕ ЭКЗАМЕНОВ</b></u>\n\n` + (examsSchedule !== "" ? examsSchedule : "Расписание экзаменов не установлено");
         }
     }
 

@@ -11,7 +11,7 @@ export default class User {
     emoji: boolean = true;
     showSettings: boolean = true;
     showTeachers: boolean = true;
-    token?: string;
+    token?: string | null;
 
     /**
      * Используется для временного хранения данных при настройке
@@ -87,7 +87,7 @@ export default class User {
      * Удаление пользователя из БД
      */
     async delete() {
-        return Users.findOneAndRemove({userId: this.id});
+        return Users.findOneAndDelete({userId: this.id});
         // TODO: Сделать удаление из массива Cache.users
     }
 
