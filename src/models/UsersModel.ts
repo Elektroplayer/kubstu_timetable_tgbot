@@ -27,6 +27,10 @@ const schema = new mongoose.Schema({
     showTeachers: {
         type: Boolean,
         default: true
+    },
+    lastActivity: {
+        type: Date,
+        default: new Date()
     }
 }, { collection: "users" });
 

@@ -12,7 +12,9 @@ export default class MessageEvent extends Event {
 
         let user = await Cache.getUser(msg.from.id);
 
-        if (!user.scene) user.scene = Cache.scenes.find((s) => s.name == "main");
+        user.updateLastActivity();
+
+        if (!user.scene) user.setScene("main");
 
         let command = user.scene!.commands.find((c) => commandName(c.name).includes(msg.text!) ) ?? user.scene!.commands.find(c => commandName(c.name).length == 0);
 

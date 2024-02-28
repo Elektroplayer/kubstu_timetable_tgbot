@@ -147,4 +147,13 @@ export default class User {
             ]
         ]
     }
+
+    async updateLastActivity() {
+        let user = await Users.findOne({userId: this.id}).exec();
+
+        if(user) {
+            user.lastActivity = new Date();
+            user.save().catch(console.log);
+        }
+    }
 }
