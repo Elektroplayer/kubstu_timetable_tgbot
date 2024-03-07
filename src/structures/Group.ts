@@ -108,14 +108,14 @@ export default class Group {
         let num = weekNumber(date);
 
         out += `<u><b>${week ? "ЧЁТНАЯ" : "НЕЧЁТНАЯ"} НЕДЕЛЯ${num ? ` | №${num}` : ""}:</b></u>\n`;
-        schedule.days.filter(elm => elm.even == week).forEach(day => {
+        schedule.days.filter(elm => elm.even == week).forEach((day, i, arr) => {
             out += `\n<b>${this.parser.days[day.daynum]} | ${F(date)}</b>\n`;
             
             day.daySchedule.forEach(lesson => {
                 out += `  ${lesson.number}. ${lesson.name} [${dict[lesson.paraType] ?? lesson.paraType}] (${lesson.auditory})\n`
             });
 
-            date.setUTCDate(date.getUTCDate()+1)
+            if(arr[i+1]) date.setUTCDate(date.getUTCDate()+(arr[i+1].daynum - day.daynum));
         });
 
         return out;
