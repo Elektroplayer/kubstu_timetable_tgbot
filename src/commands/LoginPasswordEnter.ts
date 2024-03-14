@@ -17,9 +17,9 @@ export default class TodayCommand extends Command {
         if(!login || !password) {
             Cache.bot.sendMessage(
                 msg.chat.id,
-                `Проверь правильность ввода: логин:пароль. Без лишних пробелов!`,
+                `Проверь правильность ввода: \`логин:пароль\`. Без лишних пробелов!`,
                 {
-                    parse_mode: "HTML",
+                    parse_mode: "Markdown",
                     reply_markup: { remove_keyboard: msg.chat.type !== "private" }
                 }
             );
@@ -41,8 +41,8 @@ export default class TodayCommand extends Command {
         Cache.bot.deleteMessage(msg.chat.id, msg.message_id)
 
         await Cache.bot.editMessageText(
-            parsingResult ? `Успешно! Теперь ты можешь смотреть экзамены по команде /exams!` : 
-            `Неправильный логин или пароль. Проверь правильность ввода: логин:пароль. Без лишних пробелов!\n\n<i>Если продолжает выскакивать ошибка, проверь, работает ли сайт. Если он работает, обратись <a href="https://t.me/Elektroplayer">мне в ЛС</a>.</i>`, {
+            parsingResult == true ? `Успешно! Теперь ты можешь смотреть экзамены по команде /exams!` : 
+            `${parsingResult.message}\n\n<i>При возникновении проблем обратись <a href="https://t.me/Elektroplayer">мне в ЛС</a>.</i>`, {
             chat_id: sendedMsg.chat.id,
             message_id: sendedMsg.message_id,
             parse_mode: "HTML",

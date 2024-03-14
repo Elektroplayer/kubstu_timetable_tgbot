@@ -14,6 +14,12 @@ interface IExam {
     name: string
 }
 
+interface IError {
+    message: string
+}
+
+const unknownError:IError = { message: "Что-то пошло не так. Возможно сайт сейчас не работает..." };
+
 export default class ExamParser {
     constructor(public username:string, public password:string) {}
 
@@ -43,29 +49,27 @@ export default class ExamParser {
         "Армавирский механико-технологический институт": 52,
     }
 
-    async exec() {
+    async exec():Promise<true | IError> {
         // Заходим на сайт и получаем начальные куки и csrf
         let csrf = (await this.getCookieAndCsrf())?.csrf;
 
-        if(!csrf) return false;
+        if(!csrf) return unknownError;
 
-        // Логинимся на сайте
-        let loginResult = await this.getLogin(csrf);
+        let loginResult = await this.getLogin(csrf); // Логинимся на сайте
 
-        if(!loginResult) return false;
+        if(loginResult !== true) return loginResult; // Проверяем, чтобы не было ошибок
 
         // Это всё нужно, чтобы получить куки и с помощью них посещать сайты доступные только после авторизации
 
         let exams = await this.getExams(); // Получаем экзамены
-        let info = await this.getInfo(); // И информацию
 
-        if(!exams || !info) return false;
+        if(!(exams instanceof Array)) return exams; // Проверяем, чтобы не было ошибок
+
+        let info = await this.getInfo(); // Собираем информацию
+
+        if(!exams || !info) return unknownError;
 
         await ExamsModel.findOneAndUpdate({ group: info["Группа"], inst_id: this.instsDict[info["Институт"]] }, { exams }, { upsert: true }).catch(console.log);
-
-        // console.log(info["Группа"], this.instsDict[info["Институт"]])
-
-        // await ExamsModel.findOne({group: info["Группа"], inst_id: this.instsDict[info["Институт"]]}).exec();
 
         return true;
     }
@@ -97,7 +101,7 @@ export default class ExamParser {
     /**
      * Заходит на страницу с экзаменами и записывает их
      */
-    async getExams() {
+    async getExams(): Promise<IExam[] | IError> {
         let resp;
         try {
             resp = await fetch("https://student.kubstu.ru/site/schedule-sess", { method: "GET", agent, headers: this.headers as HeadersInit })
@@ -105,10 +109,13 @@ export default class ExamParser {
             console.log(err);
         }
 
-        if(!resp) return undefined;
+        if(!resp) return unknownError;
 
         let text = await resp.text();
         let document = parse(text);
+
+        if(document.querySelectorAll(".content-header")[0].innerText.trim() == "Преподаватель глазами студентов") return { message: "Зайди в личный кабинет и пройди тест \"Преподаватель глазами студентов\". Он мешает посмотреть расписание экзаменов." };
+
         let examsHeaders = document.querySelectorAll(".panel");
         let examsCollapse = document.querySelectorAll(".panel-collapse");
         let regex = new RegExp("(.*\..*\..*) (.*:.*:.*) \/ (.*)");
@@ -178,8 +185,9 @@ export default class ExamParser {
         } catch (err) {
             console.log(err);
         }
-        
-        if(!resp || resp.status !== 302) return false;
+
+        if(!resp) return unknownError;
+        if(resp.status !== 302) return { message: "Неверный логин или пароль. Перепроверь введённые данные" };
 
         let cookie  = resp.headers.get('set-cookie');
         
